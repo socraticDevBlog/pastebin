@@ -4,9 +4,9 @@ TABLE_NAME = "paste"
 
 ENDPOINT_URL = "http://localhost:8000"
 
-table_key_schema = [{"AttributeName": "ID", "KeyType": "HASH"}]
+table_key_schema = [{"AttributeName": "id", "KeyType": "HASH"}]
 attribute_definitions = [
-    {"AttributeName": "ID", "AttributeType": "S"},
+    {"AttributeName": "id", "AttributeType": "S"},
 ]
 provisioned_throughput = {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5}
 
