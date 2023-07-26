@@ -81,13 +81,3 @@ class PastebinClient:
         content_base64 = item["Item"]["doc"]["content"]
         content = base64.b64decode(content_base64)
         return Paste(id=id, content=content)
-
-
-paste1 = PasteDataAware(content="hello")
-id1 = paste1.create()
-print(f"id is: {id1}")
-
-client = PastebinClient()
-paste_ret = client.get_item(id=id1)
-
-print(f"paste_ret is: {paste_ret}")
