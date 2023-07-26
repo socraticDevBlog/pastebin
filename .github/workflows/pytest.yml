@@ -3,6 +3,8 @@ name: PyTest
 on:
   push:
     branches:
+      - "*"
+      - "*/*"
       - "**"
       - "!main" # dont run on main branch
 
