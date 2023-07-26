@@ -1,7 +1,7 @@
 import base64, hashlib, time
 from typing import Dict
 
-from dynamodb import DB
+from src.dynamodb import DB
 
 
 class Paste:
@@ -12,16 +12,20 @@ class Paste:
 
     """
 
-    def __init__(self, content: str | bytes, id: str = None):
+    def __init__(self, content: str | bytes, id: str = None, timestamp: int = None):
         if isinstance(content, str):
             b = base64.b64encode(bytes(content, "utf-8"))
         else:
             b = content
         self._content = b.decode("utf-8")
         if id is None:
-            self._id = hashlib.sha1(content.encode("utf-8")).hexdigest()[:5]
+            self._id = hashlib.sha1(self._content.encode("utf-8")).hexdigest()
         else:
             self._id = id
+        if timestamp is None:
+            self._unix_timestamp = int(time.time())
+        else:
+            self._unix_timestamp = timestamp
 
     def dict(self) -> Dict:
         return {
@@ -38,17 +42,11 @@ class PasteDataAware(Paste):
     Extension Paste class with database awareness
     """
 
-    def __init__(
-        self, content: str | bytes, id: str = None, timestamp: int = None, db=None
-    ):
+    def __init__(self, content: str | bytes, id: str = None, db=None):
         if db is None:
             self._db = DB()
         else:
             self._db = db
-        if timestamp is None:
-            self._unix_timestamp = int(time.time())
-        else:
-            self._unix_timestamp = timestamp
 
         super().__init__(id=id, content=content)
 
@@ -83,3 +81,13 @@ class PastebinClient:
         content_base64 = item["Item"]["doc"]["content"]
         content = base64.b64decode(content_base64)
         return Paste(id=id, content=content)
+
+
+paste1 = PasteDataAware(content="hello")
+id1 = paste1.create()
+print(f"id is: {id1}")
+
+client = PastebinClient()
+paste_ret = client.get_item(id=id1)
+
+print(f"paste_ret is: {paste_ret}")

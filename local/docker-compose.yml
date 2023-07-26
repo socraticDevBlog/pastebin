@@ -1,0 +1,31 @@
+version: "3"
+services:
+  dynamodb:
+    image: amazon/dynamodb-local:1.16.0
+    container_name: app-dynamodb
+    hostname: app-dynamodb
+    volumes:
+      - app_dynamodb:/home/dynamodblocal
+    working_dir: /home/dynamodblocal
+    ports:
+      - "8000:8000"
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ."
+    restart: unless-stopped
+
+  dynamodb_migrator:
+    image: banst/awscli:1.18.76
+    container_name: app-dynamodb_migrator
+    working_dir: /home/dynamodblocal
+    command: dynamodb create-table --cli-input-json file://paste.json --endpoint-url http://dynamodb:8000
+    volumes:
+      - ./schema:/home/dynamodblocal
+    environment:
+      - AWS_ACCESS_KEY_ID=x
+      - AWS_SECRET_ACCESS_KEY=y
+      - AWS_DEFAULT_REGION=local
+    depends_on:
+      - dynamodb
+
+volumes:
+  app_dynamodb:
+    driver: local
