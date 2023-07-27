@@ -1,4 +1,4 @@
-
+[![PyTest](https://github.com/socraticDevBlog/pastebin/actions/workflows/pytest.yml/badge.svg?branch=main)](https://github.com/socraticDevBlog/pastebin/actions/workflows/pytest.yml)
 # poor man cloud-native pastebin
 
 this project is about using AWS Free tier resources to host yourown pastebin
