@@ -6,7 +6,6 @@ on:
       - "*"
       - "*/*"
       - "**"
-      - "!main" # dont run on main branch
 
 jobs:
   test:
