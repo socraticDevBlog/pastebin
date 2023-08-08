@@ -33,6 +33,14 @@ print out a list of tables in your DynamoDB instance:
 aws dynamodb list-tables --endpoint-url http://localhost:8000
 ```
 
+expect to find the "paste" table:
+
+```json
+{
+  "TableNames": ["paste"]
+}
+```
+
 ### stopping and removing dynamodb-local
 
 **use `-v` flag to completely delete database table "paste"**
@@ -42,9 +50,3 @@ docker compose down -v
 ```
 
 more info/examples: <https://github.com/aws-samples/aws-sam-java-rest>
-
-## SAM (serverless application model)
-
-````bash
-brew install aws-sam-cli
-````

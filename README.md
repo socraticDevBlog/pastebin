@@ -1,4 +1,5 @@
 [![PyTest](https://github.com/socraticDevBlog/pastebin/actions/workflows/pytest.yml/badge.svg?branch=main)](https://github.com/socraticDevBlog/pastebin/actions/workflows/pytest.yml)
+
 # poor man cloud-native pastebin
 
 this project is about using AWS Free tier resources to host yourown pastebin
@@ -31,7 +32,37 @@ Install dependencies
 pipenv install --deploy --dev
 ```
 
-Start DynamoDB local instance
+### Run Lambda locally
+
+Using SAM (Serverless Application Model) CLI, you can easily execute the lambda
+locally
+
+We are using only one (1) lambda entrypoint to cover all http requests since
+our use case is pretty simple.
+
+Lambda code is located at `src/app.py`
+
+Stubbed lambda _event_ input arguments are located at `local/events/`. There is
+one file per http verb.
+
+#### simulate a POST request locally
+
+```bash
+pipenv run sam build
+
+pipenv run sam local invoke -e local/events/post.json
+
+# > Invoking app.lambda_handler (python3.9)
+# Local image is up-to-date
+# Using local image: public.ecr.aws/lambda/python:3.9-rapid-x86_64.
+
+# Mounting /Users/me/git/pastebin/.aws-sam/build/PastebinFunction as /var/task:ro,delegated, inside runtime container
+# START RequestId: 378e46ab-dd9b-4a31-bec7-1cc1b4a06ae8 Version: $LATEST
+# END RequestId: 378e46ab-dd9b-4a31-bec7-1cc1b4a06ae8
+# REPORT RequestId: 378e46ab-dd9b-4a31-bec7-1cc1b4a06ae8  Init Duration: 1.52 ms  Duration: 1021.66 ms    Billed Duration: 1022 ms        Memory Size: 128 MB     Max Memory Used: 128 MB
+```
+
+### Start DynamoDB local instance
 
 ```bash
  cd local
@@ -63,6 +94,8 @@ pipenv run test -v
 
 ## Tech Stack
 
+**dependencies management** pipenv
+
 **database:** aws DynamoDB
 
 **computing:** aws Lambda, python, boto3
@@ -76,4 +109,3 @@ pipenv run test -v
 - Docker
 - DynamoDB local
 - SAM (Lambda), awscli
-- localStack (API Gateway)

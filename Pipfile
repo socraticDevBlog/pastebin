@@ -8,6 +8,7 @@ boto3 = "*"
 
 [dev-packages]
 pytest = "*"
+aws-sam-cli = "*"
 
 [requires]
 python_version = "3.11"
