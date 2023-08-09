@@ -1,4 +1,4 @@
 {
     "message": "user are not allowed to delete their pastes",
-    "method": "DELETE"
+    "httpMethod": "DELETE"
   }

@@ -32,6 +32,14 @@ Install dependencies
 pipenv install --deploy --dev
 ```
 
+### Start DynamoDB local instance
+
+```bash
+ cd local
+
+ docker compose up
+```
+
 ### Run Lambda locally
 
 Using SAM (Serverless Application Model) CLI, you can easily execute the lambda
@@ -62,12 +70,30 @@ pipenv run sam local invoke -e local/events/post.json
 # REPORT RequestId: 378e46ab-dd9b-4a31-bec7-1cc1b4a06ae8  Init Duration: 1.52 ms  Duration: 1021.66 ms    Billed Duration: 1022 ms        Memory Size: 128 MB     Max Memory Used: 128 MB
 ```
 
-### Start DynamoDB local instance
+### run API Gateway locally
+
+sam CLI will detect the API Gateway and its available methods automatically
+(GET, POST, etc.)
+
+developer will use Postman app or VS Code Thunder Client to issue http request
+toward `localhost:3000/paste` endpoint
+
 
 ```bash
- cd local
+pipenv run sam local start-api
 
- docker compose up
+# Initializing the lambda functions containers.                                                                                                                                                         
+# Local image is up-to-date                                                                                                                                                                             
+# Using local image: public.ecr.aws/lambda/python:3.9-rapid-x86_64.                                                                                                                                     
+                                                                                                                                                                                                      
+# Mounting /Users/user/Documents/git/pastebin/.aws-sam/build/PastebinFunction as /var/task:ro,delegated, inside runtime container                                                                
+# Containers Initialization is done.                                                                                                                                                                    
+# Mounting PastebinFunction at http://127.0.0.1:3000/paste [GET]                                                                                                                                        
+# You can now browse to the above endpoints to invoke your functions. You do not need to restart/reload SAM CLI while working on your functions, changes will be reflected instantly/automatically. If  
+# you used sam build before running local commands, you will need to re-run sam build for the changes to be picked up. You only need to restart SAM CLI if you update your AWS SAM template             
+# 2023-08-09 17:19:04 WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+#  * Running on http://127.0.0.1:3000
+# 2023-08-09 17:19:04 Press CTRL+C to quit
 ```
 
 ## Running Tests

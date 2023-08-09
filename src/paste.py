@@ -1,7 +1,7 @@
-import base64, hashlib, time
+import base64
+import hashlib
+import time
 from typing import Dict
-
-from src.dynamodb import DB
 
 
 class Paste:
@@ -12,12 +12,13 @@ class Paste:
 
     """
 
-    def __init__(self, content: str | bytes, id: str = None, timestamp: int = None):
-        if isinstance(content, str):
+    def __init__(self, content: str = None, id: str = None, timestamp: int = None):
+        if content is not None:
             b = base64.b64encode(bytes(content, "utf-8"))
+            self._content = b.decode("utf-8")
         else:
-            b = content
-        self._content = b.decode("utf-8")
+            # will be removed by the time we go to prod
+            self._content = "Im an empty paste obviously"
         if id is None:
             self._id = hashlib.sha1(self._content.encode("utf-8")).hexdigest()
         else:
@@ -34,50 +35,5 @@ class Paste:
             "created_timestamp": self._unix_timestamp,
         }
 
-
-class PasteDataAware(Paste):
-    """
-    PasteDataAware
-
-    Extension Paste class with database awareness
-    """
-
-    def __init__(self, content: str | bytes, id: str = None, db=None):
-        if db is None:
-            self._db = DB()
-        else:
-            self._db = db
-
-        super().__init__(id=id, content=content)
-
-    def create(self) -> str:
-        return self._db.create(self.dict())
-
-
-class PastebinClient:
-    """
-    PastebinClient
-
-    high-level object that can interact with database
-
-    and perform 'business' operations as requested by a user
-    or a API call
-
-    """
-
-    def __init__(self, db=None):
-        if db is None:
-            self._db = DB()
-        else:
-            self._db = db
-
-    def get_item(self, id: str) -> str:
-        item = self._db.get_item(id=id)
-        return item["Item"]
-
-    def get_paste(self, id: str) -> Paste:
-        item = self.get_item(id=id)
-        id = item["Item"]["doc"]["id"]
-        content_base64 = item["Item"]["doc"]["content"]
-        content = base64.b64decode(content_base64)
-        return Paste(id=id, content=content)
+    def to_string(self) -> str:
+        return self._content
