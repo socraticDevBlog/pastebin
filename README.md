@@ -56,9 +56,7 @@ one file per http verb.
 #### simulate a POST request locally
 
 ```bash
-pipenv run sam build
-
-pipenv run sam local invoke -e local/events/post.json
+pipenv run sam build && pipenv run sam local invoke -e local/events/post.json
 
 # > Invoking app.lambda_handler (python3.9)
 # Local image is up-to-date

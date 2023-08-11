@@ -16,8 +16,8 @@ Resources:
           Properties:
             Path: /paste
             Method: get
-        # CreatePaste:
-        #   Type: Api
-        #   Properties:
-        #     Path: /paste
-        #     Method: post
+        CreatePaste:
+          Type: Api
+          Properties:
+            Path: /paste
+            Method: post
