@@ -42,7 +42,7 @@ class Paste:
 
     def dict(self) -> Dict:
         return {
-            "id": self._id,
+            "id": self.id,
             "content": self._base64_decode_content(),
             "isBase64Encoded": False,
             "encoding": DEFAULT_ENCODING,
