@@ -88,10 +88,23 @@ pipenv install --deploy --dev
 
 ### 2. Start DynamoDB local instance
 
+you want to start a local database (DynamoDB) install locally and provision it
+with a table named `paste`
+
 ```bash
  cd local
 
  docker compose up
+```
+
+#### got errors or want to start with a fresh database
+
+remove running dynamodb container and start a fresh one
+
+```bash
+docker compose down -v
+
+docker compose up
 ```
 
 ### 3. Run Lambda locally
