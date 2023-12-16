@@ -14,6 +14,60 @@ this project is about using AWS Free tier resources to host yourown pastebin
 
 ## Run Locally
 
+### 0. setting your python stuff locally (recommended)
+
+since we want to control our Python version, it is suggested to use `pyenv`. it
+is how we do it on our debian-based machines and you're free to do it your way
+if you prefer to.
+
+> pyenv lets you easily switch between multiple versions of Python. It's simple, unobtrusive, and follows the UNIX tradition of single-purpose tools that do one thing well.
+
+   [1. install pyenv](https://github.com/pyenv/pyenv#installation):
+
+```bash
+curl https://pyenv.run | bash
+```
+
+and make sure to update with update `.bashrc` file with required wizardry
+
+2.install dependencies used by `pyenv` to compile interpreters
+
+```bash
+sudo apt-get install build-essential zlib1g-dev libffi-dev libssl-dev libbz2-dev libreadline-dev libsqlite3-dev liblzma-dev python-tk python3-tk tk-dev
+```
+
+3.Install latest `python 3.9.*` version with pyenv
+
+```bash
+pyenv install 3.9.18 # as of 2023-12-16
+```
+
+4.set python 3.9.* as your preferred local version (or read CLI help menu to
+select more appropriate version management for your context)
+
+```
+pyenv local 3.9.18
+
+python -V
+# expect
+# Python 3.9.18
+```
+
+5.install `pipenv` for your user only
+
+```bash
+pip install --user pipenv
+
+binarylocation=$(python -m site --user-base)/bin
+# retrieve pipenv binary location in order to add it to PATH (suggested: add it to your .bashrc file)
+
+export PATH=$PATH:"$binarylocation"
+```
+
+5.be mindful that from now on you are to use `pyenv` to change local python
+version according to the projects you are working on
+
+### 1. running app
 Clone the project
 
 ```bash
@@ -32,7 +86,7 @@ Install dependencies
 pipenv install --deploy --dev
 ```
 
-### Start DynamoDB local instance
+### 2. Start DynamoDB local instance
 
 ```bash
  cd local
@@ -40,7 +94,7 @@ pipenv install --deploy --dev
  docker compose up
 ```
 
-### Run Lambda locally
+### 3. Run Lambda locally
 
 Using SAM (Serverless Application Model) CLI, you can easily execute the lambda
 locally
@@ -68,7 +122,7 @@ pipenv run sam build && pipenv run sam local invoke -e local/events/post.json
 # REPORT RequestId: 378e46ab-dd9b-4a31-bec7-1cc1b4a06ae8  Init Duration: 1.52 ms  Duration: 1021.66 ms    Billed Duration: 1022 ms        Memory Size: 128 MB     Max Memory Used: 128 MB
 ```
 
-### run API Gateway locally
+### 4. run API Gateway locally
 
 sam CLI will detect the API Gateway and its available methods automatically
 (GET, POST, etc.)
