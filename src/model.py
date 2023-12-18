@@ -1,7 +1,8 @@
 import base64
 import hashlib
 import time
-from typing import Dict
+from typing import Dict, Union
+
 
 DEFAULT_ENCODING = "utf-8"
 
@@ -57,3 +58,29 @@ class Paste:
     def _base64_encode_str(self, content: str, encoding: str = DEFAULT_ENCODING) -> str:
         b = base64.b64encode(bytes(content, encoding))
         return b.decode(encoding)
+
+
+from dynamodb import DB
+
+
+class PasteDataAware(Paste):
+    """
+    PasteDataAware
+
+    Extension Paste class with database awareness
+    """
+
+    def __init__(self, content: Union[str, bytes], db: DB, id: str = None):
+        self._db = db
+        super().__init__(id=id, content=content)
+
+    def insert(self) -> str:
+        """
+        insert
+
+        inserts a new Paste in database
+
+        Returns:
+            str: Paste's unique ID
+        """
+        return self._db.insert(self.dict())

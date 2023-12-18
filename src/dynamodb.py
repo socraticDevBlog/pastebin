@@ -1,7 +1,9 @@
 import boto3
 from typing import Dict
 
-ENDPOINT_URL = "http://localhost:8000"
+
+class DB_Exception(Exception):
+    pass
 
 
 class DB:
@@ -13,15 +15,24 @@ class DB:
     """
 
     def __init__(
-        self, table_name: str = "paste", dynamodb_endpoint_url: str = ENDPOINT_URL
+        self,
+        is_local: bool,
+        dynamodb_endpoint_url: str = "",
+        region: str = "us-east-1",
+        table_name: str = "paste",
     ):
-        db = boto3.resource("dynamodb", endpoint_url=dynamodb_endpoint_url)
-        self._table = db.Table(table_name)
-        self._db = db
+        if is_local:
+            self._table = boto3.resource(
+                "dynamodb", endpoint_url=dynamodb_endpoint_url
+            ).Table(table_name)
+        else:
+            self._table = boto3.resource("dynamodb", region_name=region).Table(
+                table_name
+            )
 
-    def create(self, dict: Dict) -> str:
+    def insert(self, dict: Dict) -> str:
         """
-        create
+        insert
 
         saves Paste into dynamoDB
 
@@ -30,7 +41,11 @@ class DB:
         returns Paste's "id"
 
         """
-        self._table.put_item(Item=dict)
+        try:
+            self._table.put_item(Item=dict)
+        except:
+            raise DB_Exception(f"Writing to table failed")
+
         return dict["id"]
 
     def get_item(self, id: str):

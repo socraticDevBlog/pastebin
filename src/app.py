@@ -1,6 +1,41 @@
 import json
 
-from model import Paste
+import os
+
+from model import Paste, PasteDataAware
+from dynamodb import DB
+
+
+class Configs:
+    """
+
+    Configs
+
+    object used to build and store configuration values
+
+    """
+
+    def __init__(self, environ):
+        self.is_local = environ["AWS_SAM_LOCAL"] == "true"
+        self.region = "local" if self.is_local else "ca-central-1"
+        self.dynamodb_endpoint = (
+            self._dynamodb_endpoint_by_os(environ["DEVENV"]) if self.is_local else ""
+        )
+
+    def _dynamodb_endpoint_by_os(self, os: str):
+        """
+
+        Args:
+            os (str): friendly name of the Operating System on which you are
+            running Docker-engine/Desktop
+
+        Returns:
+            str: local Docker-based dynamodb endpoint
+        """
+        if os == "linux":
+            return "http://localhost:8000"
+
+        return "http://host.docker.internal:8000"
 
 
 def lambda_handler(event, context):
@@ -18,6 +53,13 @@ def lambda_handler(event, context):
     """
     method = event["httpMethod"]
 
+    configs = Configs(environ=os.environ)
+    db = DB(
+        is_local=configs.is_local,
+        region=configs.region,
+        dynamodb_endpoint_url=configs.dynamodb_endpoint,
+    )
+
     if method == "GET":
         paste = Paste(
             content="dummy content because Database is not plugged yet",
@@ -30,11 +72,16 @@ def lambda_handler(event, context):
             ),
         }
     elif method == "POST":
-        body = json.loads(event["body"])
-        paste = Paste(content=body["content"])
+        paste = PasteDataAware(content=event["content"], db=db)
+
+        try:
+            id = paste.insert()
+        except Exception as e:
+            return {"statusCode": 500, "body": e.args[0]}
+
         return {
             "statusCode": 201,
-            "body": json.dumps({"id": paste.id}),
+            "body": json.dumps({"id": id}),
         }
     else:
         # APi Gateway should prevent this code for ever getting executed
