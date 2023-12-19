@@ -6,6 +6,10 @@ class DB_Exception(Exception):
     pass
 
 
+class Not_Found(DB_Exception):
+    pass
+
+
 class DB:
     """
     DB
@@ -57,6 +61,11 @@ class DB:
         returns whole DynamoDB Item
 
         """
-        return self._table.get_item(
+        response = self._table.get_item(
             Key={"id": id},
         )
+
+        if "Item" not in response:
+            raise Not_Found
+
+        return response

@@ -135,6 +135,16 @@ pipenv run sam build && pipenv run sam local invoke -e local/events/post.json
 # REPORT RequestId: 378e46ab-dd9b-4a31-bec7-1cc1b4a06ae8  Init Duration: 1.52 ms  Duration: 1021.66 ms    Billed Duration: 1022 ms        Memory Size: 128 MB     Max Memory Used: 128 MB
 ```
 
+#### simulate a GET request locally
+
+⚠️ make sure you have successfully inserted at least one(1) Paste in your local
+database.  Make sure `id` value in `local/events/get.json` file reflects this
+inserted Paste's Id.
+
+```bash
+pipenv run sam build && pipenv run sam local invoke -e local/events/get.json
+```
+
 ### 4. run API Gateway locally
 
 sam CLI will detect the API Gateway and its available methods automatically

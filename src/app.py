@@ -61,15 +61,16 @@ def lambda_handler(event, context):
     )
 
     if method == "GET":
-        paste = Paste(
-            content="dummy content because Database is not plugged yet",
-            id=event["queryStringParameters"]["id"],
-        )
+        paste = PasteDataAware(db=db, id=event["queryStringParameters"]["id"])
+
+        try:
+            content = paste.read()
+        except:
+            return {"statusCode": 404}
+
         return {
             "statusCode": 200,
-            "body": json.dumps(
-                {"content": paste.dict()["content"], "pasteInfos": paste.dict()}
-            ),
+            "body": json.dumps({"content": content}),
         }
     elif method == "POST":
         paste = PasteDataAware(content=event["content"], db=db)

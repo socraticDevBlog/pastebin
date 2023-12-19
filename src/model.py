@@ -70,7 +70,7 @@ class PasteDataAware(Paste):
     Extension Paste class with database awareness
     """
 
-    def __init__(self, content: Union[str, bytes], db: DB, id: str = None):
+    def __init__(self, db: DB, content: Union[str, bytes] = None, id: str = None):
         self._db = db
         super().__init__(id=id, content=content)
 
@@ -84,3 +84,15 @@ class PasteDataAware(Paste):
             str: Paste's unique ID
         """
         return self._db.insert(self.dict())
+
+    def read(self) -> str:
+        """
+
+        Args:
+            none
+
+        Returns:
+            str: Paste content
+        """
+
+        return self._db.get_item(self.id)["Item"]["content"]

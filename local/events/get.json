@@ -1,3 +1,6 @@
 {
-    "httpMethod": "GET"
-  }
+  "queryStringParameters": {
+    "id": "c21a724a24cb793e060eff2bc9598cc220b06439"
+  },
+  "httpMethod": "GET"
+}
