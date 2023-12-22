@@ -1,4 +1,4 @@
-from src.model import Paste
+from src.abstract import Paste
 
 
 def test_required_fields_to_object():

@@ -2,7 +2,7 @@ import json
 
 import os
 
-from model import Paste, PasteDataAware
+from model import PasteDataAware
 from dynamodb import DB
 
 
