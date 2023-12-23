@@ -18,8 +18,10 @@ terraform {
 }
 
 provider "aws" {
-  profile = "default"
-  region  = "ca-central-1"
+  profile    = "default"
+  region     = "ca-central-1"
+  access_key = "fill me"
+  secret_key = "fille me too"
 }
 
 resource "random_string" "random" {
@@ -27,7 +29,7 @@ resource "random_string" "random" {
   special = false
 }
 
-resource "aws_dynamodb_table" "movie_table" {
+resource "aws_dynamodb_table" "paste" {
   name           = var.dynamodb_table
   billing_mode   = "PROVISIONED"
   read_capacity  = 10
@@ -40,9 +42,9 @@ resource "aws_dynamodb_table" "movie_table" {
   }
 }
 
-#========================================================================
-// lambda setup
-#========================================================================
+# #========================================================================
+# // lambda setup
+# #========================================================================
 
 resource "aws_s3_bucket" "lambda_bucket" {
   bucket_prefix = var.app_name
@@ -54,9 +56,18 @@ resource "aws_s3_bucket" "lambda_bucket" {
   }
 }
 
-resource "aws_s3_bucket_acl" "private_bucket" {
+resource "aws_s3_bucket_ownership_controls" "lambda_bucket" {
   bucket = aws_s3_bucket.lambda_bucket.id
-  acl    = "private"
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+resource "aws_s3_bucket_acl" "private_bucket" {
+  depends_on = [aws_s3_bucket_ownership_controls.lambda_bucket]
+  bucket     = aws_s3_bucket.lambda_bucket.id
+  acl        = "private"
 }
 
 data "archive_file" "lambda_zip" {
@@ -157,67 +168,67 @@ resource "aws_iam_role_policy_attachment" "lambda_policy" {
   policy_arn = aws_iam_policy.lambda_exec_role.arn
 }
 
-#========================================================================
-// API Gateway section
-#========================================================================
+# #========================================================================
+# // API Gateway section
+# #========================================================================
 
-resource "aws_apigatewayv2_api" "http_lambda" {
-  name          = "${var.app_name}-${random_string.random.id}"
-  protocol_type = "HTTP"
-}
+# resource "aws_apigatewayv2_api" "http_lambda" {
+#   name          = "${var.app_name}-${random_string.random.id}"
+#   protocol_type = "HTTP"
+# }
 
-resource "aws_apigatewayv2_stage" "default" {
-  api_id = aws_apigatewayv2_api.http_lambda.id
+# resource "aws_apigatewayv2_stage" "default" {
+#   api_id = aws_apigatewayv2_api.http_lambda.id
 
-  name        = "$default"
-  auto_deploy = true
+#   name        = "$default"
+#   auto_deploy = true
 
-  access_log_settings {
-    destination_arn = aws_cloudwatch_log_group.api_gw.arn
+#   access_log_settings {
+#     destination_arn = aws_cloudwatch_log_group.api_gw.arn
 
-    format = jsonencode({
-      requestId               = "$context.requestId"
-      sourceIp                = "$context.identity.sourceIp"
-      requestTime             = "$context.requestTime"
-      protocol                = "$context.protocol"
-      httpMethod              = "$context.httpMethod"
-      resourcePath            = "$context.resourcePath"
-      routeKey                = "$context.routeKey"
-      status                  = "$context.status"
-      responseLength          = "$context.responseLength"
-      integrationErrorMessage = "$context.integrationErrorMessage"
-      }
-    )
-  }
-  depends_on = [aws_cloudwatch_log_group.api_gw]
-}
+#     format = jsonencode({
+#       requestId               = "$context.requestId"
+#       sourceIp                = "$context.identity.sourceIp"
+#       requestTime             = "$context.requestTime"
+#       protocol                = "$context.protocol"
+#       httpMethod              = "$context.httpMethod"
+#       resourcePath            = "$context.resourcePath"
+#       routeKey                = "$context.routeKey"
+#       status                  = "$context.status"
+#       responseLength          = "$context.responseLength"
+#       integrationErrorMessage = "$context.integrationErrorMessage"
+#       }
+#     )
+#   }
+#   depends_on = [aws_cloudwatch_log_group.api_gw]
+# }
 
-resource "aws_apigatewayv2_integration" "apigw_lambda" {
-  api_id = aws_apigatewayv2_api.http_lambda.id
+# resource "aws_apigatewayv2_integration" "apigw_lambda" {
+#   api_id = aws_apigatewayv2_api.http_lambda.id
 
-  integration_uri    = aws_lambda_function.apigw_lambda_ddb.invoke_arn
-  integration_type   = "AWS_PROXY"
-  integration_method = "POST"
-}
+#   integration_uri    = aws_lambda_function.apigw_lambda_ddb.invoke_arn
+#   integration_type   = "AWS_PROXY"
+#   integration_method = "POST"
+# }
 
-resource "aws_apigatewayv2_route" "post" {
-  api_id = aws_apigatewayv2_api.http_lambda.id
+# resource "aws_apigatewayv2_route" "post" {
+#   api_id = aws_apigatewayv2_api.http_lambda.id
 
-  route_key = "POST /paste"
-  target    = "integrations/${aws_apigatewayv2_integration.apigw_lambda.id}"
-}
+#   route_key = "POST /paste"
+#   target    = "integrations/${aws_apigatewayv2_integration.apigw_lambda.id}"
+# }
 
-resource "aws_cloudwatch_log_group" "api_gw" {
-  name = "/aws/api_gw/${var.app_name}-${random_string.random.id}"
+# resource "aws_cloudwatch_log_group" "api_gw" {
+#   name = "/aws/api_gw/${var.app_name}-${random_string.random.id}"
 
-  retention_in_days = var.log_retention
-}
+#   retention_in_days = var.log_retention
+# }
 
-resource "aws_lambda_permission" "api_gw" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.apigw_lambda_ddb.function_name
-  principal     = "apigateway.amazonaws.com"
+# resource "aws_lambda_permission" "api_gw" {
+#   statement_id  = "AllowExecutionFromAPIGateway"
+#   action        = "lambda:InvokeFunction"
+#   function_name = aws_lambda_function.apigw_lambda_ddb.function_name
+#   principal     = "apigateway.amazonaws.com"
 
-  source_arn = "${aws_apigatewayv2_api.http_lambda.execution_arn}/*/*"
-}
+#   source_arn = "${aws_apigatewayv2_api.http_lambda.execution_arn}/*/*"
+# }
