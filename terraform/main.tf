@@ -94,7 +94,7 @@ resource "aws_lambda_function" "apigw_lambda_ddb" {
   s3_bucket = aws_s3_bucket.lambda_bucket.id
   s3_key    = aws_s3_object.this.key
 
-  runtime = "python3.8"
+  runtime = "python3.9"
   handler = "app.lambda_handler"
 
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256

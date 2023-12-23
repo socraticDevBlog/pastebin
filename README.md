@@ -155,7 +155,7 @@ toward `localhost:3000/paste` endpoint
 
 
 ```bash
-pipenv run sam local start-api
+pipenv run sam build && pipenv run sam local start-api
 
 # Initializing the lambda functions containers.                                                                                                                                                         
 # Local image is up-to-date                                                                                                                                                                             

@@ -4,6 +4,10 @@ import os
 
 from model import PasteDataAware
 from dynamodb import DB
+import logging
+
+logger = logging.getLogger()
+logger.setLevel("INFO")
 
 
 class Configs:
@@ -66,14 +70,23 @@ def lambda_handler(event, context):
         try:
             content = paste.read()
         except:
+            logger.error(f"GET-failed to retrieve requested paste-id {id}")
             return {"statusCode": 404}
 
         return {
             "statusCode": 200,
+            "isBase64Encoded": False,
+            "headers": {"content-type": "application/json"},
             "body": json.dumps({"content": content}),
         }
     elif method == "POST":
-        paste = PasteDataAware(content=event["content"], db=db)
+        try:
+            content = json.loads(event["body"])["content"]
+        except:
+            logger.info(f"POST-sam local invoke from local json file")
+            content = event["content"]
+
+        paste = PasteDataAware(content=content, db=db)
 
         try:
             id = paste.insert()
@@ -82,6 +95,8 @@ def lambda_handler(event, context):
 
         return {
             "statusCode": 201,
+            "isBase64Encoded": False,
+            "headers": {"content-type": "application/json"},
             "body": json.dumps({"id": id}),
         }
     else:
