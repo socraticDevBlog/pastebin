@@ -179,6 +179,23 @@ To run tests, run the following command
 pipenv run test -v
 ```
 
+## deploying
+
+We chose Terraform to deploy this app to AWS
+
+### layers (installed python depenencies)
+Make sure to package your dependancies in a zip file to add it as a layer to
+our lambda -> https://spak.no/blog/article/63f47f130faeadeeeb968ae9
+
+in a nutshell (you need to adapt to your local machine)
+
+```bash
+mkdir python
+cp -r $HOME/.local/share/virtualenvs/pastebin-<SOME ID>/lib python/
+zip -r layer.zip /python
+mv layer.zip git/pastebin/terraform
+```
+
 ## Roadmap
 
 - [x] implement a DynamoDB CRUD client

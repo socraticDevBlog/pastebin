@@ -18,10 +18,8 @@ terraform {
 }
 
 provider "aws" {
-  profile    = "default"
-  region     = "ca-central-1"
-  access_key = "fill me"
-  secret_key = "fille me too"
+  profile = "default"
+  region  = "ca-central-1"
 }
 
 resource "random_string" "random" {
@@ -70,6 +68,13 @@ resource "aws_s3_bucket_acl" "private_bucket" {
   acl        = "private"
 }
 
+resource "aws_lambda_layer_version" "python-layer" {
+  filename            = "layer.zip"
+  layer_name          = "python-layer"
+  source_code_hash    = filebase64sha256("layer.zip")
+  compatible_runtimes = ["python3.9"]
+}
+
 data "archive_file" "lambda_zip" {
   type = "zip"
 
@@ -103,11 +108,13 @@ resource "aws_lambda_function" "apigw_lambda_ddb" {
 
   environment {
     variables = {
-      DDB_TABLE = var.dynamodb_table
+      DDB_TABLE     = var.dynamodb_table,
+      AWS_SAM_LOCAL = "false",
+      DEVENV        = "false"
     }
   }
+  layers     = [aws_lambda_layer_version.python-layer.arn]
   depends_on = [aws_cloudwatch_log_group.lambda_logs]
-
 }
 
 resource "aws_cloudwatch_log_group" "lambda_logs" {
