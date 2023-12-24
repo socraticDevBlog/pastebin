@@ -183,18 +183,21 @@ pipenv run test -v
 
 We chose Terraform to deploy this app to AWS
 
-### layers (installed python depenencies)
+### layers (installed python dependancies)
+
+Python serverless functions often requires external dependencies as listed in
+`Pipfile`
+
+In AWS Lambda, we will add those dependencies as a `layer`.  Our Terraform code
+(see `terraform/main.tf` and analyse `resource "null_resource" "lambda_layer"`
+to understand how we compress project's dependencies installed on local machine
+by `pipenv`). There might be simpler ways to install Python dependencies to aws
+lambda, but as of now(2023-12-23) we don't know better.
+
 Make sure to package your dependancies in a zip file to add it as a layer to
 our lambda -> https://spak.no/blog/article/63f47f130faeadeeeb968ae9
 
-in a nutshell (you need to adapt to your local machine)
 
-```bash
-mkdir python
-cp -r $HOME/.local/share/virtualenvs/pastebin-<SOME ID>/lib python/
-zip -r layer.zip /python
-mv layer.zip git/pastebin/terraform
-```
 
 ## Roadmap
 

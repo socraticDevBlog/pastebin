@@ -12,6 +12,10 @@ terraform {
       source  = "hashicorp/archive"
       version = "2.4.1"
     }
+    local = {
+      source  = "hashicorp/local"
+      version = "2.4.1"
+    }
   }
 
   required_version = "1.6.6"
@@ -19,7 +23,7 @@ terraform {
 
 provider "aws" {
   profile = "default"
-  region  = "ca-central-1"
+  region  = var.region
 }
 
 resource "random_string" "random" {
@@ -30,7 +34,7 @@ resource "random_string" "random" {
 resource "aws_dynamodb_table" "paste" {
   name           = var.dynamodb_table
   billing_mode   = "PROVISIONED"
-  read_capacity  = 10
+  read_capacity  = 5
   write_capacity = 3
   hash_key       = "id"
 
@@ -68,24 +72,43 @@ resource "aws_s3_bucket_acl" "private_bucket" {
   acl        = "private"
 }
 
+resource "null_resource" "lambda_layer" {
+  triggers = {
+    source_file = "$HOME/.local/share/virtualenvs/pastebin-${var.virtualenv_id}/lib"
+    dest_file   = var.lambda_layer_filename
+  }
+  provisioner "local-exec" {
+    command = <<EOT
+      mkdir python
+      cp -r ${self.triggers.source_file} python/
+      zip -r ${self.triggers.dest_file} python/
+    EOT
+  }
+}
+
+data "local_file" "lambda_layer" {
+  filename = null_resource.lambda_layer.triggers.dest_file
+}
+
 resource "aws_lambda_layer_version" "python-layer" {
-  filename            = "layer.zip"
+  depends_on          = [null_resource.lambda_layer]
+  filename            = var.lambda_layer_filename
   layer_name          = "python-layer"
-  source_code_hash    = filebase64sha256("layer.zip")
-  compatible_runtimes = ["python3.9"]
+  source_code_hash    = data.local_file.lambda_layer.content_base64sha256
+  compatible_runtimes = [var.python_runtime]
 }
 
 data "archive_file" "lambda_zip" {
   type = "zip"
 
   source_dir  = "../src"
-  output_path = "${path.module}/src.zip"
+  output_path = "${path.module}/${var.compressed_app_filename}"
 }
 
 resource "aws_s3_object" "this" {
   bucket = aws_s3_bucket.lambda_bucket.id
 
-  key    = "src.zip"
+  key    = var.compressed_app_filename
   source = data.archive_file.lambda_zip.output_path
 
   etag = filemd5(data.archive_file.lambda_zip.output_path)
@@ -99,7 +122,7 @@ resource "aws_lambda_function" "apigw_lambda_ddb" {
   s3_bucket = aws_s3_bucket.lambda_bucket.id
   s3_key    = aws_s3_object.this.key
 
-  runtime = "python3.9"
+  runtime = var.python_runtime
   handler = "app.lambda_handler"
 
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
