@@ -30,7 +30,7 @@ variable "virtualenv_id" {
   description = "random ID created by pipenv when installing the project"
 }
 
-variable "lambda_layer_filename" {
+variable "compressed_dependencies_layer_filename" {
   type        = string
   default     = "layer.zip"
   description = "a python layer are external dependencies modules lambda app requires to run (ex.: boto3)"

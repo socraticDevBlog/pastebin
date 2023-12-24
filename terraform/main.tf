@@ -72,10 +72,10 @@ resource "aws_s3_bucket_acl" "private_bucket" {
   acl        = "private"
 }
 
-resource "null_resource" "lambda_layer" {
+resource "null_resource" "dependencies_layer" {
   triggers = {
     source_file = "$HOME/.local/share/virtualenvs/pastebin-${var.virtualenv_id}/lib"
-    dest_file   = var.lambda_layer_filename
+    dest_file   = var.compressed_dependencies_layer_filename
   }
   provisioner "local-exec" {
     command = <<EOT
@@ -86,15 +86,15 @@ resource "null_resource" "lambda_layer" {
   }
 }
 
-data "local_file" "lambda_layer" {
-  filename = null_resource.lambda_layer.triggers.dest_file
+data "local_file" "dependencies_layer" {
+  filename = null_resource.dependencies_layer.triggers.dest_file
 }
 
-resource "aws_lambda_layer_version" "python-layer" {
-  depends_on          = [null_resource.lambda_layer]
-  filename            = var.lambda_layer_filename
+resource "aws_lambda_layer_version" "dependencies_layer" {
+  depends_on          = [null_resource.dependencies_layer]
+  filename            = var.compressed_dependencies_layer_filename
   layer_name          = "python-layer"
-  source_code_hash    = data.local_file.lambda_layer.content_base64sha256
+  source_code_hash    = data.local_file.dependencies_layer.content_base64sha256
   compatible_runtimes = [var.python_runtime]
 }
 
@@ -136,7 +136,7 @@ resource "aws_lambda_function" "apigw_lambda_ddb" {
       DEVENV        = "false"
     }
   }
-  layers     = [aws_lambda_layer_version.python-layer.arn]
+  layers     = [aws_lambda_layer_version.dependencies_layer.arn]
   depends_on = [aws_cloudwatch_log_group.lambda_logs]
 }
 
