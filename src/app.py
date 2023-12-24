@@ -77,9 +77,18 @@ def lambda_handler(event, context):
             "statusCode": 200,
             "isBase64Encoded": False,
             "headers": {"content-type": "application/json"},
-            "body": json.dumps({"content": content}),
+            "body": {"content": content},
         }
     elif method == "POST":
+        try:
+            # Extract the IP address from the event
+            client_ip = event["requestContext"]["identity"]["sourceIp"]
+            logger.info(f"POST-client IP address: {client_ip}")
+        except:
+            logger.warn(
+                "POST- client IP address not available at event['requestContext']['identity']['sourceIp']"
+            )
+
         try:
             content = json.loads(event["body"])["content"]
         except:
@@ -97,7 +106,7 @@ def lambda_handler(event, context):
             "statusCode": 201,
             "isBase64Encoded": False,
             "headers": {"content-type": "application/json"},
-            "body": json.dumps({"id": id}),
+            "body": {"id": id},
         }
     else:
         # APi Gateway should prevent this code for ever getting executed
