@@ -53,39 +53,39 @@ paths:
                   message:
                     type: string
                     example: "Internal Server Error"
-post:
-  summary: Insert a new paste
-  requestBody:
-    required: true
-    content:
-      application/json:
-        schema:
-          type: object
-          properties:
-            content:
-              type: string
-              example: "my saved value"
-          required:
-            - content
-  responses:
-    "201":
-      description: Successfully created a paste
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              id:
-                type: string
-                example: "abec123"
-    "500":
-      description: Internal Server Error. Something went wrong on the server.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              message:
-                type: string
-                example: "Internal Server Error"
-x-amazon-apigateway-importexport-version: "1.0"
+    post:
+      summary: Insert a new paste
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  example: "my saved value"
+              required:
+                - content
+      responses:
+        "201":
+          description: Successfully created a paste
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "abec123"
+        "500":
+          description: Internal Server Error. Something went wrong on the server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal Server Error"
+    x-amazon-apigateway-importexport-version: "1.0"
