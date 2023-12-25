@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Paste</title>
+</head>
+<body>
+
+    <div>
+        <textarea id="contentInput" rows="10" cols="50" placeholder="Type or paste your content here"></textarea>
+    </div>
+
+    <div>
+        <button onclick="saveContent()">Save</button>
+    </div>
+
+    <div id="response"></div>
+
+    <script>
+        function saveContent() {
+            // Get the content from the textarea
+            var content = document.getElementById("contentInput").value;
+
+            // Create a JSON object with the content
+            var payload = {
+                "content": content
+            };
+
+            // Get the response div element
+            var responseDiv = document.getElementById("response");
+
+            // Perform a POST request using fetch
+            fetch("https://exj5m66tib.execute-api.ca-central-1.amazonaws.com/paste", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Display the response in the response div
+                responseDiv.textContent = "Response: " + JSON.stringify(data);
+            })
+            .catch(error => {
+                // Display the error in the response div
+                responseDiv.textContent = "Error: " + error.message;
+                console.error("Fetch Error:", error);
+            });
+        }
+    </script>
+
+</body>
+</html>
