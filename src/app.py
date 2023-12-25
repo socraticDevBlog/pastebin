@@ -77,7 +77,7 @@ def lambda_handler(event, context):
             "statusCode": 200,
             "isBase64Encoded": False,
             "headers": {"content-type": "application/json"},
-            "body": {"content": content},
+            "body": json.dumps(content),
         }
     elif method == "POST":
         try:
@@ -92,7 +92,7 @@ def lambda_handler(event, context):
         try:
             content = json.loads(event["body"])["content"]
         except:
-            logger.info(f"POST-sam local invoke from local json file")
+            logger.info(f'POST- unable to load content from event["body"])["content"]')
             content = event["content"]
 
         paste = PasteDataAware(content=content, db=db)
@@ -106,7 +106,7 @@ def lambda_handler(event, context):
             "statusCode": 201,
             "isBase64Encoded": False,
             "headers": {"content-type": "application/json"},
-            "body": {"id": id},
+            "body": json.dumps({"id": id}),
         }
     else:
         # APi Gateway should prevent this code for ever getting executed

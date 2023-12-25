@@ -197,7 +197,26 @@ lambda, but as of now(2023-12-23) we don't know better.
 Make sure to package your dependancies in a zip file to add it as a layer to
 our lambda -> https://spak.no/blog/article/63f47f130faeadeeeb968ae9
 
+## use your pastebin on the public internet
 
+### retrieve the endpoint URI
+_assuming you have successfully deployed the app on aws using `terraform
+apply`_ on your aws account
+
+
+1. retrieve _api gateway_ endpoint using terraform command `terraform output`
+   from key `api_gateway_endpoint`. it should look like an long URL (ex.:
+   https://abc1234.execute-api.ca-central-1.amasonaws.com)
+2. perform `POST` request to insert a new paste
+  ```bash
+  curl -i  -X POST -H "Content-Type: application/json" -d '{"content":"one two tree testing my new api gateway/lambda integration"}' https://exj5m66tib.execute-api.ca-central-1.amazonaws.com/paste
+
+  ```
+3. perform a `GET` query over previous paste
+
+```
+ curl -i https://exj5m66tib.execute-api.ca-central-1.amazonaws.com/paste?id=<previous POST request response value>
+```
 
 ## Roadmap
 
@@ -207,9 +226,9 @@ our lambda -> https://spak.no/blog/article/63f47f130faeadeeeb968ae9
 
 - [ ] implement CI 'better practices' automated safe-guards
 
-- [ ] develop a lambda that will Create and Read pastes
+- [x] develop a lambda that will Create and Read pastes
 
-- [ ] implement an API Gateway that exposes Lamba's functions via http endpoints
+- [x] implement an API Gateway that exposes Lamba's functions via http endpoint
 
 - [ ] deploy required infrastructure using Terraform in AWS
 

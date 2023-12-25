@@ -17,3 +17,15 @@ output "dynamo_db_arn" {
 output "cloudwatch_log_group_arn" {
   value = aws_cloudwatch_log_group.lambda_logs.arn
 }
+
+output "api_gateway_endpoint" {
+  value = aws_apigatewayv2_api.http_lambda.api_endpoint
+}
+
+output "api_gateway_arn" {
+  value = aws_apigatewayv2_api.http_lambda.arn
+}
+
+output "api_gateway_route" {
+  value = aws_apigatewayv2_route.any.route_key
+}

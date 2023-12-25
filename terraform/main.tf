@@ -202,63 +202,63 @@ resource "aws_iam_role_policy_attachment" "lambda_policy" {
 # // API Gateway section
 # #========================================================================
 
-# resource "aws_apigatewayv2_api" "http_lambda" {
-#   name          = "${var.app_name}-${random_string.random.id}"
-#   protocol_type = "HTTP"
-# }
+resource "aws_apigatewayv2_api" "http_lambda" {
+  name          = "${var.app_name}-${random_string.random.id}"
+  protocol_type = "HTTP"
+}
 
-# resource "aws_apigatewayv2_stage" "default" {
-#   api_id = aws_apigatewayv2_api.http_lambda.id
+resource "aws_apigatewayv2_stage" "default" {
+  api_id = aws_apigatewayv2_api.http_lambda.id
 
-#   name        = "$default"
-#   auto_deploy = true
+  name        = "$default"
+  auto_deploy = true
 
-#   access_log_settings {
-#     destination_arn = aws_cloudwatch_log_group.api_gw.arn
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.api_gw.arn
 
-#     format = jsonencode({
-#       requestId               = "$context.requestId"
-#       sourceIp                = "$context.identity.sourceIp"
-#       requestTime             = "$context.requestTime"
-#       protocol                = "$context.protocol"
-#       httpMethod              = "$context.httpMethod"
-#       resourcePath            = "$context.resourcePath"
-#       routeKey                = "$context.routeKey"
-#       status                  = "$context.status"
-#       responseLength          = "$context.responseLength"
-#       integrationErrorMessage = "$context.integrationErrorMessage"
-#       }
-#     )
-#   }
-#   depends_on = [aws_cloudwatch_log_group.api_gw]
-# }
+    format = jsonencode({
+      requestId               = "$context.requestId"
+      sourceIp                = "$context.identity.sourceIp"
+      requestTime             = "$context.requestTime"
+      protocol                = "$context.protocol"
+      httpMethod              = "$context.httpMethod"
+      resourcePath            = "$context.resourcePath"
+      routeKey                = "$context.routeKey"
+      status                  = "$context.status"
+      responseLength          = "$context.responseLength"
+      integrationErrorMessage = "$context.integrationErrorMessage"
+      }
+    )
+  }
+  depends_on = [aws_cloudwatch_log_group.api_gw]
+}
 
-# resource "aws_apigatewayv2_integration" "apigw_lambda" {
-#   api_id = aws_apigatewayv2_api.http_lambda.id
+resource "aws_apigatewayv2_integration" "apigw_lambda" {
+  api_id = aws_apigatewayv2_api.http_lambda.id
 
-#   integration_uri    = aws_lambda_function.apigw_lambda_ddb.invoke_arn
-#   integration_type   = "AWS_PROXY"
-#   integration_method = "POST"
-# }
+  integration_uri    = aws_lambda_function.apigw_lambda_ddb.invoke_arn
+  integration_type   = "AWS_PROXY"
+  integration_method = "POST"
+}
 
-# resource "aws_apigatewayv2_route" "post" {
-#   api_id = aws_apigatewayv2_api.http_lambda.id
+resource "aws_apigatewayv2_route" "any" {
+  api_id = aws_apigatewayv2_api.http_lambda.id
 
-#   route_key = "POST /paste"
-#   target    = "integrations/${aws_apigatewayv2_integration.apigw_lambda.id}"
-# }
+  route_key = "ANY /paste"
+  target    = "integrations/${aws_apigatewayv2_integration.apigw_lambda.id}"
+}
 
-# resource "aws_cloudwatch_log_group" "api_gw" {
-#   name = "/aws/api_gw/${var.app_name}-${random_string.random.id}"
+resource "aws_cloudwatch_log_group" "api_gw" {
+  name = "/aws/api_gw/${var.app_name}-${random_string.random.id}"
 
-#   retention_in_days = var.log_retention
-# }
+  retention_in_days = var.log_retention
+}
 
-# resource "aws_lambda_permission" "api_gw" {
-#   statement_id  = "AllowExecutionFromAPIGateway"
-#   action        = "lambda:InvokeFunction"
-#   function_name = aws_lambda_function.apigw_lambda_ddb.function_name
-#   principal     = "apigateway.amazonaws.com"
+resource "aws_lambda_permission" "api_gw" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.apigw_lambda_ddb.function_name
+  principal     = "apigateway.amazonaws.com"
 
-#   source_arn = "${aws_apigatewayv2_api.http_lambda.execution_arn}/*/*"
-# }
+  source_arn = "${aws_apigatewayv2_api.http_lambda.execution_arn}/*/*"
+}
