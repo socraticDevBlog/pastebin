@@ -1,0 +1,91 @@
+openapi: "3.0.1"
+info:
+  title: "pastebin"
+  version: "2023-12-25 17:09:00UTC"
+servers:
+  - url: "https://paste.dailybuild.org/{basePath}"
+    variables:
+      basePath:
+        default: "paste"
+paths:
+  /paste:
+    get:
+      summary: Retrieve a paste by ID
+      parameters:
+        - in: query
+          name: id
+          required: true
+          schema:
+            type: string
+          example: "abc123"
+          description: The unique ID of the paste to retrieve
+      responses:
+        "200":
+          description: Successfully retrieved the paste
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: "abc123"
+                  content:
+                    type: string
+                    example: "my saved value"
+        "404":
+          description: Paste not found. The specified ID does not exist.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Paste not found"
+        "500":
+          description: Internal Server Error. Something went wrong on the server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal Server Error"
+post:
+  summary: Insert a new paste
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            content:
+              type: string
+              example: "my saved value"
+          required:
+            - content
+  responses:
+    "201":
+      description: Successfully created a paste
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+                example: "abec123"
+    "500":
+      description: Internal Server Error. Something went wrong on the server.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Internal Server Error"
+x-amazon-apigateway-importexport-version: "1.0"
