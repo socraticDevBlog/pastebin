@@ -1,17 +1,32 @@
+<!-- HTML for static distribution bundle build -->
 <!DOCTYPE html>
-<html lang=”en”>
-<head>
-<meta charset=”UTF-8">
-<meta name=”viewport” content=”width=device-width, initial-scale=1">
-<link rel=”stylesheet” type=”text/css” href=”//pagecdn.io/lib/swagger-ui/v3.31.1/swagger-ui.css”>
-<title>OpenAPI pastebin</title>
-<body><div id=”openapi”><script src=”//pagecdn.io/lib/swagger-ui/v3.31.1/swagger-ui-bundle.js”></script>
-<script>
-window.onload = function () {
-  const ui = SwaggerUIBundle({
-    url: "openapi.yml",
-    dom_id: "#openapi"
-  })
-}
-</script>
-</body>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Swagger UI</title>
+    <link rel="stylesheet" type="text/css" href="./dist/swagger-ui.css" />
+    <link rel="stylesheet" type="text/css" href="./distindex.css" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="./dist/favicon-32x32.png"
+      sizes="32x32"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="./dist/favicon-16x16.png"
+      sizes="16x16"
+    />
+  </head>
+
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="./dist/swagger-ui-bundle.js" charset="UTF-8"></script>
+    <script
+      src="./dist/swagger-ui-standalone-preset.js"
+      charset="UTF-8"
+    ></script>
+    <script src="./dist/swagger-initializer.js" charset="UTF-8"></script>
+  </body>
+</html>
