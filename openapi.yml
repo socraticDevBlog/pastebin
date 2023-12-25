@@ -3,10 +3,8 @@ info:
   title: "pastebin"
   version: "2023-12-25 17:09:00UTC"
 servers:
-  - url: "https://paste.dailybuild.org/{basePath}"
-    variables:
-      basePath:
-        default: "paste"
+  - url: "https://paste.dailybuild.org"
+
 paths:
   /paste:
     get:
