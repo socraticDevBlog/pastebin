@@ -230,6 +230,24 @@ resource "aws_apigatewayv2_stage" "default" {
       }
     )
   }
+
+  default_route_settings {
+    throttling_burst_limit = 5
+    throttling_rate_limit  = 30
+  }
+
+  route_settings {
+    route_key              = aws_apigatewayv2_route.get.route_key
+    throttling_burst_limit = 5
+    throttling_rate_limit  = 5
+  }
+
+  route_settings {
+    route_key              = aws_apigatewayv2_route.post.route_key
+    throttling_burst_limit = 15
+    throttling_rate_limit  = 15
+  }
+
   depends_on = [aws_cloudwatch_log_group.api_gw]
 }
 
@@ -241,10 +259,17 @@ resource "aws_apigatewayv2_integration" "apigw_lambda" {
   integration_method = "POST"
 }
 
-resource "aws_apigatewayv2_route" "any" {
+resource "aws_apigatewayv2_route" "get" {
   api_id = aws_apigatewayv2_api.http_lambda.id
 
-  route_key = "ANY /paste"
+  route_key = "GET /paste"
+  target    = "integrations/${aws_apigatewayv2_integration.apigw_lambda.id}"
+}
+
+resource "aws_apigatewayv2_route" "post" {
+  api_id = aws_apigatewayv2_api.http_lambda.id
+
+  route_key = "POST /paste"
   target    = "integrations/${aws_apigatewayv2_integration.apigw_lambda.id}"
 }
 

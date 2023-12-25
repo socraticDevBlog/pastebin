@@ -27,5 +27,5 @@ output "api_gateway_arn" {
 }
 
 output "api_gateway_route" {
-  value = aws_apigatewayv2_route.any.route_key
+  value = aws_apigatewayv2_route.get.route_key
 }
