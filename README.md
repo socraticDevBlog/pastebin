@@ -230,7 +230,7 @@ apply`_ on your aws account
 
 - [x] implement an API Gateway that exposes Lamba's functions via http endpoint
 
-- [ ] deploy required infrastructure using Terraform in AWS
+- [x] deploy required infrastructure using Terraform in AWS
 
 ## Tech Stack
 
