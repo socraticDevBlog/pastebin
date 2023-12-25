@@ -90,9 +90,9 @@ def lambda_handler(event, context):
             )
 
         try:
-            content = json.loads(event["body"])["content"]
+            content = json.loads(event["body"], strict=False)["content"]
         except:
-            logger.info(f'POST- unable to load content from event["body"])["content"]')
+            logger.warning(f'POST- unable to load content from event["body"])["content"]')
             content = event["content"]
 
         paste = PasteDataAware(content=content, db=db)
