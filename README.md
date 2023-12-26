@@ -1,4 +1,5 @@
-[![PyTest](https://github.com/socraticDevBlog/pastebin/actions/workflows/pytest.yml/badge.svg?branch=main)](https://github.com/socraticDevBlog/pastebin/actions/workflows/pytest.yml)
+[![PyTest](https://github.com/socraticDevBlog/pastebin/actions/workflows/pytest.yml/badge.svg?branch=main)](https://github.com/socraticDevBlog/pastebin/actions/workflows/pytest.yml)![openapispec](https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fimg.shields.io%2Fbadge%2Fdynamic%2Fyaml%3Furl%3Dhttps%253A%252F%252Fgithub.com%252FsocraticDevBlog%252Fpastebin%252Fblob%252Fmain%252Fopenapi.yml)
+
 
 # poor man cloud-native pastebin
 
