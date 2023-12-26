@@ -2,11 +2,17 @@
 
 # poor man cloud-native pastebin
 
+![official project's image](assets/pastebin.png "socraticDevBlog cloud-native pastebin")
+
 this project is about using AWS Free tier resources to host yourown pastebin
 
 > A pastebin or text storage site is a type of online content-hosting service
 > where users can store plain text (e.g. source code snippets for code review
 > via Internet Relay Chat (IRC))
+
+## swagger UI
+
+[swagger UI pastebin http endpoints](https://socraticdevblog.github.io/pastebin/)
 
 ## Authors
 
