@@ -40,3 +40,8 @@ variable "compressed_app_filename" {
   type    = string
   default = "src.zip"
 }
+
+variable "cors_allow_origins" {
+  type    = set(string)
+  default = ["*"]
+}

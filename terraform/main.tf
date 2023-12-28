@@ -205,6 +205,14 @@ resource "aws_iam_role_policy_attachment" "lambda_policy" {
 resource "aws_apigatewayv2_api" "http_lambda" {
   name          = "${var.app_name}-${random_string.random.id}"
   protocol_type = "HTTP"
+  cors_configuration {
+    allow_origins     = var.cors_allow_origins
+    allow_methods     = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    allow_credentials = false
+    allow_headers     = ["accept", "Content-Type", "X-Amz-Date", "Authorization", "x-api-key", "x-amz-security-token", "Auth", "apigw-requestid", "date"]
+    max_age           = 300
+    expose_headers    = ["accept", "Content-Type", "X-Amz-Date", "Authorization", "x-api-key", "x-amz-security-token", "Auth", "apigw-requestid", "date"]
+  }
 }
 
 resource "aws_apigatewayv2_stage" "default" {
@@ -270,6 +278,13 @@ resource "aws_apigatewayv2_route" "post" {
   api_id = aws_apigatewayv2_api.http_lambda.id
 
   route_key = "POST /paste"
+  target    = "integrations/${aws_apigatewayv2_integration.apigw_lambda.id}"
+}
+
+resource "aws_apigatewayv2_route" "options" {
+  api_id = aws_apigatewayv2_api.http_lambda.id
+
+  route_key = "OPTIONS /paste"
   target    = "integrations/${aws_apigatewayv2_integration.apigw_lambda.id}"
 }
 

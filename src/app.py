@@ -76,7 +76,12 @@ def lambda_handler(event, context):
         return {
             "statusCode": 200,
             "isBase64Encoded": False,
-            "headers": {"content-type": "application/json"},
+            "headers": {
+                "content-type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
+                "Access-Control-Allow-Headers": "Content-Type",
+            },
             "body": json.dumps(content),
         }
     elif method == "POST":
@@ -92,7 +97,9 @@ def lambda_handler(event, context):
         try:
             content = json.loads(event["body"], strict=False)["content"]
         except:
-            logger.warning(f'POST- unable to load content from event["body"])["content"]')
+            logger.warning(
+                f'POST- unable to load content from event["body"])["content"]'
+            )
             content = event["content"]
 
         paste = PasteDataAware(content=content, db=db)
@@ -105,10 +112,25 @@ def lambda_handler(event, context):
         return {
             "statusCode": 201,
             "isBase64Encoded": False,
-            "headers": {"content-type": "application/json"},
+            "headers": {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
+                "Access-Control-Allow-Headers": "Content-Type",
+            },
             "body": json.dumps({"id": id}),
         }
     else:
         # APi Gateway should prevent this code for ever getting executed
         # (see template.yml definition file)
-        return {"statusCode": 405, "body": json.dumps({"message": "bob"})}
+        return {
+            "statusCode": 200,
+            "isBase64Encoded": False,
+            "headers": {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
+                "Access-Control-Allow-Headers": "Content-Type",
+            },
+            "body": json.dumps({"message": "probably checking your OPTIONS"}),
+        }
