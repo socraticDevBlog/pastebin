@@ -3,6 +3,10 @@ info:
   title: "pastebin"
   version: "2023-12-25 17:09:00UTC"
   description: "poor man pastebin - using aws free tier to host your personal pastebin"
+  contact:
+    name: socraticDev
+    url: https://www.linkedin.com/company/92752680/admin/feed/posts/
+    email: thesocraticdev@gmail.com
 servers:
   - url: "https://paste.socratic.dev"
   - url: "https://exj5m66tib.execute-api.ca-central-1.amazonaws.com"
@@ -13,6 +17,7 @@ paths:
   /paste:
     get:
       summary: Retrieve a paste by ID
+      description: open endpoint to retrieve a paste by ID
       operationId: "retrieve-paste-by-id"
       tags:
         - "pastes"
@@ -60,6 +65,7 @@ paths:
                     example: "Internal Server Error"
     post:
       summary: Insert a new paste
+      description: public endpoint to save a paste
       operationId: "insert-a-new-paste"
       tags:
         - "pastes"
