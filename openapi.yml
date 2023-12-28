@@ -2,14 +2,20 @@ openapi: "3.0.1"
 info:
   title: "pastebin"
   version: "2023-12-25 17:09:00UTC"
+  description: "poor man pastebin - using aws free tier to host your personal pastebin"
 servers:
   - url: "https://paste.socratic.dev"
-  - url: "https://exj5m66tib.execute-api.ca-central-1.amazonaws.com/"
-
+  - url: "https://exj5m66tib.execute-api.ca-central-1.amazonaws.com"
+tags:
+  - name: "pastes"
+    description: "some strings a user wants to save for later"
 paths:
   /paste:
     get:
       summary: Retrieve a paste by ID
+      operationId: "retrieve-paste-by-id"
+      tags:
+        - "pastes"
       parameters:
         - in: query
           name: id
@@ -54,6 +60,9 @@ paths:
                     example: "Internal Server Error"
     post:
       summary: Insert a new paste
+      operationId: "insert-a-new-paste"
+      tags:
+        - "pastes"
       requestBody:
         required: true
         content:
