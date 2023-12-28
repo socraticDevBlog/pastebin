@@ -4,6 +4,7 @@ info:
   version: "2023-12-25 17:09:00UTC"
 servers:
   - url: "https://paste.socratic.dev"
+  - url: "https://d-a1lrqlnb5m.execute-api.ca-central-1.amazonaws.com"
 
 paths:
   /paste:
