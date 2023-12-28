@@ -7,15 +7,14 @@ on:
       - "**"
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
     steps:
       - name: Check out repository code
         uses: actions/checkout@v2
-      - name: OpenAPI Lint Checks
-        uses: nwestfall/openapi-action@v1.0.2
+      - name: Lint openapi file
+        uses: crudo/spectral-action
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          file: openapi.yml
+          file_path: openapi.yml
