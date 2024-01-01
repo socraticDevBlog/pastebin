@@ -241,7 +241,7 @@ resource "aws_apigatewayv2_stage" "default" {
 
   default_route_settings {
     throttling_burst_limit = 5
-    throttling_rate_limit  = 30
+    throttling_rate_limit  = 5
   }
 
   route_settings {
@@ -252,8 +252,8 @@ resource "aws_apigatewayv2_stage" "default" {
 
   route_settings {
     route_key              = aws_apigatewayv2_route.post.route_key
-    throttling_burst_limit = 15
-    throttling_rate_limit  = 15
+    throttling_burst_limit = 5
+    throttling_rate_limit  = 5
   }
 
   depends_on = [aws_cloudwatch_log_group.api_gw]

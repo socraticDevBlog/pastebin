@@ -8,6 +8,17 @@ Globals:
         DEVENV: windows # macos | linux
 
 Resources:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: local
+      Cors:
+        AllowMethods: "'OPTIONS,POST,GET'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigin: "'*'"
+        AllowCredentials: "'false'" # Disable credentials for CORS
+        # Add the following line to allow unauthenticated OPTIONS requests
+        ApiGatewayManagedCors: "'true'"
   PastebinFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -28,3 +39,8 @@ Resources:
           Properties:
             Path: /paste
             Method: post
+        cors:
+          Type: Api
+          Properties:
+            Path: /paste
+            Method: options
