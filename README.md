@@ -3,7 +3,7 @@
 
 # poor man cloud-native pastebin
 
-![official project's image](assets/pastebin.png "socraticDevBlog cloud-native pastebin")
+![official project's image](pastebin.png "socraticDevBlog cloud-native pastebin")
 
 this project is about using AWS Free tier resources to host yourown pastebin
 
