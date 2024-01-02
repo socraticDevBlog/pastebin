@@ -65,25 +65,56 @@ def lambda_handler(event, context):
     )
 
     if method == "GET":
-        paste = PasteDataAware(db=db, id=event["queryStringParameters"]["id"])
-
         try:
+            paste = PasteDataAware(db=db, id=event["queryStringParameters"]["id"])
             content = paste.read()
         except:
             logger.error(f"GET-failed to retrieve requested paste-id {id}")
             return {"statusCode": 404}
 
-        return {
-            "statusCode": 200,
-            "isBase64Encoded": False,
-            "headers": {
-                "content-type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
-            "body": json.dumps(content),
-        }
+        try:
+            user_agent = event.get("headers", {}).get("User-Agent", "")
+            is_web_browser = "Mozilla" in user_agent or "AppleWebKit" in user_agent
+        except:
+            is_web_browser = False
+
+        if is_web_browser:
+            response_html = """
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Saved Content</title>
+                </head>
+                <body>
+                    <pre>{}</pre>
+                </body>
+                </html>
+            """.format(
+                content
+            )
+            return {
+                "statusCode": 200,
+                "isBase64Encoded": False,
+                "headers": {
+                    "Content-Type": "text/html",
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
+                    "Access-Control-Allow-Headers": "Content-Type",
+                },
+                "body": response_html,
+            }
+        else:
+            return {
+                "statusCode": 200,
+                "isBase64Encoded": False,
+                "headers": {
+                    "content-type": "application/json",
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
+                    "Access-Control-Allow-Headers": "Content-Type",
+                },
+                "body": json.dumps(content),
+            }
     elif method == "POST":
         try:
             # Extract the IP address from the event
