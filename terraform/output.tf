@@ -29,3 +29,7 @@ output "api_gateway_arn" {
 output "api_gateway_route" {
   value = aws_apigatewayv2_route.get.route_key
 }
+
+output "budget_alarm_email" {
+  value = aws_sns_topic_subscription.email_subscription.endpoint
+}
