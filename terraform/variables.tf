@@ -45,3 +45,7 @@ variable "cors_allow_origins" {
   type    = set(string)
   default = ["*"]
 }
+
+variable "notification_email" {
+  type    = string
+}

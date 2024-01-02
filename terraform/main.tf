@@ -240,20 +240,20 @@ resource "aws_apigatewayv2_stage" "default" {
   }
 
   default_route_settings {
-    throttling_burst_limit = 5
-    throttling_rate_limit  = 5
+    throttling_burst_limit = 1
+    throttling_rate_limit  = 1
   }
 
   route_settings {
     route_key              = aws_apigatewayv2_route.get.route_key
     throttling_burst_limit = 5
-    throttling_rate_limit  = 5
+    throttling_rate_limit  = 2
   }
 
   route_settings {
     route_key              = aws_apigatewayv2_route.post.route_key
-    throttling_burst_limit = 5
-    throttling_rate_limit  = 5
+    throttling_burst_limit = 2
+    throttling_rate_limit  = 1
   }
 
   depends_on = [aws_cloudwatch_log_group.api_gw]
@@ -301,4 +301,33 @@ resource "aws_lambda_permission" "api_gw" {
   principal     = "apigateway.amazonaws.com"
 
   source_arn = "${aws_apigatewayv2_api.http_lambda.execution_arn}/*/*"
+}
+
+resource "aws_cloudwatch_metric_alarm" "budget_alarm" {
+  alarm_name          = "MonthlyChargeAlarm"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 1
+  metric_name         = "EstimatedCharges"
+  namespace           = "AWS/Billing"
+  period              = 86400 # 1 day in seconds
+  statistic           = "Maximum"
+  threshold           = 1.0
+
+  dimensions = {
+    Currency = "USD"
+  }
+
+  alarm_description = "pastebin Alarm for exceeding budget threshold of one dollar USD per month"
+
+  alarm_actions = [aws_sns_topic.budget_notification.arn]
+}
+
+resource "aws_sns_topic" "budget_notification" {
+  name = "BudgetNotificationTopic"
+}
+
+resource "aws_sns_topic_subscription" "email_subscription" {
+  topic_arn = aws_sns_topic.budget_notification.arn
+  protocol  = "email"
+  endpoint  = var.notification_email
 }
