@@ -6,40 +6,29 @@ from model import PasteDataAware
 from dynamodb import DB
 import logging
 
+
 logger = logging.getLogger()
 logger.setLevel("INFO")
 
 
-class Configs:
+def _dynamodb_endpoint_by_os(os: str):
     """
 
-    Configs
+    Args:
+        os (str): friendly name of the Operating System on which you are
+        running Docker-engine/Desktop
 
-    object used to build and store configuration values
-
+    Returns:
+        str: local Docker-based dynamodb endpoint
     """
 
-    def __init__(self, environ):
-        self.is_local = environ["AWS_SAM_LOCAL"] == "true"
-        self.region = "local" if self.is_local else "ca-central-1"
-        self.dynamodb_endpoint = (
-            self._dynamodb_endpoint_by_os(environ["DEVENV"]) if self.is_local else ""
-        )
+    if os == "":
+        return ""
 
-    def _dynamodb_endpoint_by_os(self, os: str):
-        """
+    if os == "linux":
+        return "http://localhost:8000"
 
-        Args:
-            os (str): friendly name of the Operating System on which you are
-            running Docker-engine/Desktop
-
-        Returns:
-            str: local Docker-based dynamodb endpoint
-        """
-        if os == "linux":
-            return "http://localhost:8000"
-
-        return "http://host.docker.internal:8000"
+    return "http://host.docker.internal:8000"
 
 
 def lambda_handler(event, context):
@@ -57,11 +46,11 @@ def lambda_handler(event, context):
     """
     method = event["httpMethod"]
 
-    configs = Configs(environ=os.environ)
+    is_local_envir = os.environ["AWS_SAM_LOCAL"] == "true"
     db = DB(
-        is_local=configs.is_local,
-        region=configs.region,
-        dynamodb_endpoint_url=configs.dynamodb_endpoint,
+        is_local=is_local_envir,
+        region="local" if is_local_envir else "ca-central-1",
+        dynamodb_endpoint_url=_dynamodb_endpoint_by_os(os=os.environ["DEVENV"]),
     )
 
     if method == "GET":

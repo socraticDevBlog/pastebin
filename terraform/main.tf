@@ -132,8 +132,8 @@ resource "aws_lambda_function" "apigw_lambda_ddb" {
   environment {
     variables = {
       DDB_TABLE     = var.dynamodb_table,
-      AWS_SAM_LOCAL = "false",
-      DEVENV        = "false"
+      AWS_SAM_LOCAL = "",
+      DEVENV        = ""
     }
   }
   layers     = [aws_lambda_layer_version.dependencies_layer.arn]
