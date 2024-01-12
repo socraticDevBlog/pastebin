@@ -1,6 +1,5 @@
 [![PyTest](https://github.com/socraticDevBlog/pastebin/actions/workflows/pytest.yml/badge.svg?branch=main)](https://github.com/socraticDevBlog/pastebin/actions/workflows/pytest.yml)[![openapiv3](https://github.com/socraticDevBlog/pastebin/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/socraticDevBlog/pastebin/actions/workflows/lint.yml)
 
-
 # poor man cloud-native pastebin
 
 ![official project's image](pastebin.png "socraticDevBlog cloud-native pastebin")
@@ -21,46 +20,7 @@ this project is about using AWS Free tier resources to host yourown pastebin
 
 ## Run Locally
 
-### 0. setting your python stuff locally (recommended)
-
-since we want to control our Python version, it is suggested to use `pyenv`. it
-is how we do it on our debian-based machines and you're free to do it your way
-if you prefer to.
-
-> pyenv lets you easily switch between multiple versions of Python. It's simple, unobtrusive, and follows the UNIX tradition of single-purpose tools that do one thing well.
-
-   [1. install pyenv](https://github.com/pyenv/pyenv#installation):
-
-```bash
-curl https://pyenv.run | bash
-```
-
-and make sure to update with update `.bashrc` file with required wizardry
-
-2.install dependencies used by `pyenv` to compile interpreters
-
-```bash
-sudo apt-get install build-essential zlib1g-dev libffi-dev libssl-dev libbz2-dev libreadline-dev libsqlite3-dev liblzma-dev python-tk python3-tk tk-dev
-```
-
-3.Install latest `python 3.9.*` version with pyenv
-
-```bash
-pyenv install 3.9.18 # as of 2023-12-16
-```
-
-4.set python 3.9.* as your preferred local version (or read CLI help menu to
-select more appropriate version management for your context)
-
-```
-pyenv local 3.9.18
-
-python -V
-# expect
-# Python 3.9.18
-```
-
-5.install `pipenv` for your user only
+install `pipenv` for your user only
 
 ```bash
 pip install --user pipenv
@@ -71,10 +31,8 @@ binarylocation=$(python -m site --user-base)/bin
 export PATH=$PATH:"$binarylocation"
 ```
 
-5.be mindful that from now on you are to use `pyenv` to change local python
-version according to the projects you are working on
-
 ### 1. running app
+
 Clone the project
 
 ```bash
@@ -145,7 +103,7 @@ pipenv run sam build && pipenv run sam local invoke -e local/events/post.json
 #### simulate a GET request locally
 
 ⚠️ make sure you have successfully inserted at least one(1) Paste in your local
-database.  Make sure `id` value in `local/events/get.json` file reflects this
+database. Make sure `id` value in `local/events/get.json` file reflects this
 inserted Paste's Id.
 
 ```bash
@@ -160,19 +118,18 @@ sam CLI will detect the API Gateway and its available methods automatically
 developer will use Postman app or VS Code Thunder Client to issue http request
 toward `localhost:3000/paste` endpoint
 
-
 ```bash
 pipenv run sam build && pipenv run sam local start-api
 
-# Initializing the lambda functions containers.                                                                                                                                                         
-# Local image is up-to-date                                                                                                                                                                             
-# Using local image: public.ecr.aws/lambda/python:3.9-rapid-x86_64.                                                                                                                                     
-                                                                                                                                                                                                      
-# Mounting /Users/user/Documents/git/pastebin/.aws-sam/build/PastebinFunction as /var/task:ro,delegated, inside runtime container                                                                
-# Containers Initialization is done.                                                                                                                                                                    
-# Mounting PastebinFunction at http://127.0.0.1:3000/paste [GET]                                                                                                                                        
-# You can now browse to the above endpoints to invoke your functions. You do not need to restart/reload SAM CLI while working on your functions, changes will be reflected instantly/automatically. If  
-# you used sam build before running local commands, you will need to re-run sam build for the changes to be picked up. You only need to restart SAM CLI if you update your AWS SAM template             
+# Initializing the lambda functions containers.
+# Local image is up-to-date
+# Using local image: public.ecr.aws/lambda/python:3.9-rapid-x86_64.
+
+# Mounting /Users/user/Documents/git/pastebin/.aws-sam/build/PastebinFunction as /var/task:ro,delegated, inside runtime container
+# Containers Initialization is done.
+# Mounting PastebinFunction at http://127.0.0.1:3000/paste [GET]
+# You can now browse to the above endpoints to invoke your functions. You do not need to restart/reload SAM CLI while working on your functions, changes will be reflected instantly/automatically. If
+# you used sam build before running local commands, you will need to re-run sam build for the changes to be picked up. You only need to restart SAM CLI if you update your AWS SAM template
 # 2023-08-09 17:19:04 WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
 #  * Running on http://127.0.0.1:3000
 # 2023-08-09 17:19:04 Press CTRL+C to quit
@@ -195,7 +152,7 @@ We chose Terraform to deploy this app to AWS
 Python serverless functions often requires external dependencies as listed in
 `Pipfile`
 
-In AWS Lambda, we will add those dependencies as a `layer`.  Our Terraform code
+In AWS Lambda, we will add those dependencies as a `layer`. Our Terraform code
 (see `terraform/main.tf` and analyse `resource "null_resource" "lambda_layer"`
 to understand how we compress project's dependencies installed on local machine
 by `pipenv`). There might be simpler ways to install Python dependencies to aws
@@ -207,18 +164,20 @@ our lambda -> https://spak.no/blog/article/63f47f130faeadeeeb968ae9
 ## use your pastebin on the public internet
 
 ### retrieve the endpoint URI
+
 _assuming you have successfully deployed the app on aws using `terraform
 apply`_ on your aws account
-
 
 1. retrieve _api gateway_ endpoint using terraform command `terraform output`
    from key `api_gateway_endpoint`. it should look like an long URL (ex.:
    https://abc1234.execute-api.ca-central-1.amasonaws.com)
 2. perform `POST` request to insert a new paste
-  ```bash
-  curl -i  -X POST -H "Content-Type: application/json" -d '{"content":"one two tree testing my new api gateway/lambda integration"}' https://exj5m66tib.execute-api.ca-central-1.amazonaws.com/paste
 
-  ```
+```bash
+curl -i  -X POST -H "Content-Type: application/json" -d '{"content":"one two tree testing my new api gateway/lambda integration"}' https://exj5m66tib.execute-api.ca-central-1.amazonaws.com/paste
+
+```
+
 3. perform a `GET` query over previous paste
 
 ```
