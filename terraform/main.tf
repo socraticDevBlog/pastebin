@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "5.31.0"
+      version = "5.34.0"
     }
     random = {
       source  = "hashicorp/random"
@@ -10,7 +10,7 @@ terraform {
     }
     archive = {
       source  = "hashicorp/archive"
-      version = "2.4.1"
+      version = "2.4.2"
     }
     local = {
       source  = "hashicorp/local"
@@ -18,7 +18,7 @@ terraform {
     }
   }
 
-  required_version = "1.6.6"
+  required_version = "1.7.2"
 }
 
 provider "aws" {
@@ -86,15 +86,10 @@ resource "null_resource" "dependencies_layer" {
   }
 }
 
-data "local_file" "dependencies_layer" {
-  filename = null_resource.dependencies_layer.triggers.dest_file
-}
-
 resource "aws_lambda_layer_version" "dependencies_layer" {
-  depends_on          = [null_resource.dependencies_layer]
   filename            = var.compressed_dependencies_layer_filename
   layer_name          = "python-layer"
-  source_code_hash    = data.local_file.dependencies_layer.content_base64sha256
+  source_code_hash    = base64sha256(null_resource.dependencies_layer.triggers.dest_file)
   compatible_runtimes = [var.python_runtime]
 }
 
