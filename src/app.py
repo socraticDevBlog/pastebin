@@ -73,6 +73,7 @@ def lambda_handler(event, context):
                 <html>
                 <head>
                     <title>Saved Content</title>
+                    <meta charset="UTF-8">
                 </head>
                 <body>
                     <pre>{}</pre>
@@ -85,7 +86,7 @@ def lambda_handler(event, context):
                 "statusCode": 200,
                 "isBase64Encoded": False,
                 "headers": {
-                    "Content-Type": "text/html",
+                    "Content-Type": "text/html; charset=utf-8",
                     "Access-Control-Allow-Origin": "*",
                     "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
                     "Access-Control-Allow-Headers": "Content-Type",
