@@ -39,9 +39,8 @@ jobs:
 
       - name: Terraform fmt
         id: fmt
-        run: 
-            cd terraform &&
-            terraform fmt -check
+        run: cd terraform &&
+          terraform fmt -check
         continue-on-error: true
 
       - name: Terraform Init
@@ -49,21 +48,19 @@ jobs:
         env:
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME_TFSTATE }}
           AWS_BUCKET_KEY_NAME: ${{ secrets.AWS_TFSTATE_FILE_NAME }}
-        run: 
-            cd terraform &&
-            terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
+          AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
+        run: cd terraform &&
+          terraform init -backend-config="bucket=${AWS_BUCKET_NAME}"  -backend-config="workspace_key_prefix"=${AWS_ACCOUNT_ID} -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
 
       - name: Terraform Validate
         id: validate
-        run: 
-            cd terraform &&
-            terraform validate -no-color
+        run: cd terraform &&
+          terraform validate -no-color
 
       - name: Terraform Plan
         id: plan
-        run: 
-            cd terraform &&
-            terraform plan -no-color
+        run: cd terraform &&
+          terraform plan -no-color
         if: github.event_name == 'pull_request'
         continue-on-error: true
 
