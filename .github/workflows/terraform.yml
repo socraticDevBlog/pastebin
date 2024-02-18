@@ -61,7 +61,7 @@ jobs:
         run: cd terraform &&
           terraform plan -no-color
         env:
-          TF_VAR_NOTIFICATION_EMAIL: ${{ secrets.TF_VAR_NOTIFICATION_EMAIL }}
+          TF_VAR_notification_email: ${{ secrets.TF_VAR_NOTIFICATION_EMAIL }}
         if: github.event_name == 'pull_request'
         continue-on-error: true
 
@@ -69,7 +69,7 @@ jobs:
         if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-          TF_VAR_NOTIFICATION_EMAIL: ${{ secrets.TF_VAR_NOTIFICATION_EMAIL }}
+          TF_VAR_notification_email: ${{ secrets.TF_VAR_NOTIFICATION_EMAIL }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
