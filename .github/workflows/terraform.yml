@@ -40,7 +40,7 @@ jobs:
       - name: Terraform fmt
         id: fmt
         run: 
-            cd terraform
+            cd terraform &&
             terraform fmt -check
         continue-on-error: true
 
@@ -50,7 +50,7 @@ jobs:
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME_TFSTATE }}
           AWS_BUCKET_KEY_NAME: ${{ secrets.AWS_TFSTATE_FILE_NAME }}
         run: 
-            cd terraform
+            cd terraform &&
             terraform init -backend-config="bucket=${AWS_BUCKET_NAME}" -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
 
       - name: Terraform Validate
