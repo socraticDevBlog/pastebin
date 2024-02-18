@@ -48,9 +48,8 @@ jobs:
         env:
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME_TFSTATE }}
           AWS_BUCKET_KEY_NAME: ${{ secrets.AWS_TFSTATE_FILE_NAME }}
-          AWS_ACCOUNT_ID: ${{secrets.AWS_ACCOUNT_ID}}
         run: cd terraform &&
-          terraform init -backend-config="bucket=${AWS_BUCKET_NAME}"  -backend-config="workspace_key_prefix"=${AWS_ACCOUNT_ID} -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
+          terraform init -backend-config="bucket=${AWS_BUCKET_NAME}"  -backend-config="key=${AWS_BUCKET_KEY_NAME}" -backend-config="region=${AWS_REGION}"
 
       - name: Terraform Validate
         id: validate
