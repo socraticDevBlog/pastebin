@@ -6,7 +6,6 @@ on:
       - "*/*"
       - "**"
       - "!main"
-  pull_request:
 permissions:
   id-token: write # This is required for aws oidc connection
   contents: read # This is required for actions/checkout
@@ -60,11 +59,8 @@ jobs:
         id: plan
         run: cd terraform &&
           terraform plan -no-color
-        if: github.event_name == 'pull_request'
-        continue-on-error: true
 
       - uses: actions/github-script@v6
-        if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
