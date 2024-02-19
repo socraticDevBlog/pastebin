@@ -1,11 +1,6 @@
 name: "Terraform Plan only action"
 on:
   push:
-    branches:
-      - "*"
-      - "*/*"
-      - "**"
-      - "!main"
   pull_request:
 permissions:
   id-token: write # This is required for aws oidc connection
@@ -41,7 +36,7 @@ jobs:
         id: fmt
         run: cd terraform &&
           terraform fmt -check
-        continue-on-error: true
+        continue-on-error: false
 
       - name: Terraform Init
         id: init
@@ -61,15 +56,13 @@ jobs:
         run: cd terraform &&
           terraform plan -no-color
         env:
-          TF_VAR_notification_email: ${{ secrets.TF_VAR_NOTIFICATION_EMAIL }}
-        if: github.event_name == 'pull_request'
-        continue-on-error: true
+          TF_VAR_notification_email: ${{ secrets.NOTIFICATION_EMAIL }}
+        continue-on-error: false
 
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
-          TF_VAR_notification_email: ${{ secrets.TF_VAR_NOTIFICATION_EMAIL }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -107,6 +100,6 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: exit 1
 
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: terraform apply -auto-approve -input=false
+      # - name: Terraform Apply
+      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      #   run: terraform apply -auto-approve -input=false
