@@ -47,5 +47,6 @@ variable "cors_allow_origins" {
 }
 
 variable "notification_email" {
-  type = string
+  type      = string
+  sensitive = true
 }

@@ -22,8 +22,7 @@ terraform {
 }
 
 provider "aws" {
-  profile = "default"
-  region  = var.region
+  region = var.region
 }
 
 resource "random_string" "random" {
