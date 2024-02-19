@@ -53,7 +53,7 @@ jobs:
           TF_VAR_notification_email: ${{ secrets.NOTIFICATION_EMAIL }}
         continue-on-error: false
 
-        - name: Substitute Secrets in PLAN
+      - name: Substitute Secrets in PLAN
         id: set-plan
         run: echo "PLAN=$(echo '${{ steps.plan.outputs.stdout }}' | sed 's/$AWS_ACCOUNT_ID/***/g')" >> $GITHUB_ENV
         shell: bash
