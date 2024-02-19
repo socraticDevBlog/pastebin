@@ -61,7 +61,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             var updatedPlan = process.env.PLAN.replace(/${{secrets.AWS_ACCOUNT_ID}}/g, '127449185323');
-            var updatedPlan = updatedPlan.replace(/${{secrets.AWS_BUCKET_NAME_TFSTATE}}/g, "tfstate-bucket");
+            updatedPlan = updatedPlan.replace(/${{secrets.AWS_BUCKET_NAME_TFSTATE}}/g, "tfstate-bucket");
+            updatedPlan = updatedPlan.replace(/${{secrets.NOTIFICATION_EMAIL}}/g, "socdev@dev.com");
+
             process.env.PLAN = updatedPlan;
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
