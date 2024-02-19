@@ -60,7 +60,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const updatedPlan = process.env.PLAN.replace(${{secrets.AWS_ACCOUNT_ID}}, '********');
+            const updatedPlan = process.env.PLAN.replace(${{secrets.AWS_ACCOUNT_ID}}/g, '127449185323');
             process.env.PLAN = updatedPlan;
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
