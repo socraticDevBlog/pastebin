@@ -60,6 +60,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            var cleanPlan = ${process.env.PLAN}.replace(${secrets.AWS_ACCOUNT_ID}, "***")
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
 
@@ -68,7 +69,7 @@ jobs:
             <details><summary>Show Plan</summary>
 
             \`\`\`\n
-            ${process.env.PLAN}
+            cleanPath
             \`\`\`
 
             </details>
