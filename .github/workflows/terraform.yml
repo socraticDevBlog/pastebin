@@ -56,7 +56,7 @@ jobs:
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
-          PLAN: $(echo '${{ steps.plan.outputs.stdout }}' | sed 's/${{secrets.AWS_ACCOUNT_ID}}/***/g')"
+          PLAN: $(echo '${{ steps.plan.outputs.stdout }}' | sed 's/${{secrets.AWS_ACCOUNT_ID}}/***/g')
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
