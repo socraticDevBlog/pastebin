@@ -53,10 +53,14 @@ jobs:
           TF_VAR_notification_email: ${{ secrets.NOTIFICATION_EMAIL }}
         continue-on-error: false
 
+      - name: Substitute Secrets in PLAN
+        id: set-plan
+        run: echo "PLAN=${{ steps.plan.outputs.stdout}} | replace(${{secrets.AWS_ACCOUNT_ID}}, '***') }}" >> $GITHUB_ENV
+
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
-          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+          PLAN: ${{ steps.set-plan.outputs.PLAN }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
