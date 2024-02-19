@@ -53,15 +53,10 @@ jobs:
           TF_VAR_notification_email: ${{ secrets.NOTIFICATION_EMAIL }}
         continue-on-error: false
 
-      - name: Substitute Secrets in PLAN
-        id: set-plan
-        run: echo "PLAN=$(echo '${{ steps.plan.outputs.stdout }}' | sed 's/${{secrets.AWS_ACCOUNT_ID}}/***/g')" >> $GITHUB_ENV
-        shell: bash
-
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
-          PLAN: ${{ steps.set-plan.outputs.PLAN }}
+          PLAN: $(echo '${{ steps.plan.outputs.stdout }}' | sed 's/${{secrets.AWS_ACCOUNT_ID}}/***/g')"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -73,7 +68,7 @@ jobs:
             <details><summary>Show Plan</summary>
 
             \`\`\`\n
-            ${process.env.PLAN}
+            ${PLAN}
             \`\`\`
 
             </details>
