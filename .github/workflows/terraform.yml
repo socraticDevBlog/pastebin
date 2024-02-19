@@ -55,7 +55,8 @@ jobs:
 
       - name: Substitute Secrets in PLAN
         id: set-plan
-        run: echo "PLAN=${{ steps.plan.outputs.stdout}} | replace(${{secrets.AWS_ACCOUNT_ID}}, '***') }}" >> $GITHUB_ENV
+        run: echo "PLAN=$(echo '${{ steps.plan.outputs.stdout }}' | sed 's/${{secrets.AWS_ACCOUNT_ID}}/***/g')" >> $GITHUB_ENV
+        shell: bash
 
       - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
