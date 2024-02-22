@@ -1,8 +1,7 @@
 [![PyTest](https://github.com/socraticDevBlog/pastebin/actions/workflows/pytest.yml/badge.svg?branch=main)](https://github.com/socraticDevBlog/pastebin/actions/workflows/pytest.yml)[![openapiv3](https://github.com/socraticDevBlog/pastebin/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/socraticDevBlog/pastebin/actions/workflows/lint.yml)
-[![terraform](https://github.com/socraticDevBlog/pastebin/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/socraticDevBlog/pastebin/actions/workflows/terraform.yml)
+[![terraform](https://github.com/socraticDevBlog/pastebin/actions/workflows/terraform.yml/badge.svg?branch=main)](https://github.com/socraticDevBlog/pastebin/actions/workflows/terraform.yml)
 
-# poor man cloud-native pastebin
-
+# poor man cloud-native pastebin3
 ![official project's image](pastebin.png "socraticDevBlog cloud-native pastebin")
 
 this project is about using AWS Free tier resources to host yourown pastebin
