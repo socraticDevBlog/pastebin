@@ -63,8 +63,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             var txt_plan = process.env.PLAN
-            for (const key in process.env.ALLSECRETS) {
-              txt_plan = txt_plan.replace(new RegExp(process.env.ALLSECRETS[key], 'g'), '***');
+            for (const key in secrets) {
+              txt_plan = txt_plan.replace(new RegExp(secrets[key], 'g'), '***');
             }
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
