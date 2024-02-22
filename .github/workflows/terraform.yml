@@ -54,16 +54,10 @@ jobs:
         continue-on-error: false
 
       - uses: actions/github-script@v6
-        env:
-          ALLSECRETS: "${{ toJSON(secrets) }}"
-          PLAN: "${{ steps.plan.outputs.stdout }}"
-        with:
-          script: |
-            console.log(JSON.parse(process.env.ALLSECRETS));
-
-      - uses: actions/github-script@v6
+        name: print Terraform Plan to PR comment
         if: github.event_name == 'pull_request'
         env:
+          ALLSECRETS: "${{ toJSON(secrets) }}"
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -74,6 +68,10 @@ jobs:
             #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
 
             <details><summary>Show Plan</summary>
+            for (const key in process.env.ALLSECRETS) {
+              process.env.PLAN = process.env.PLAN.replace(new RegExp(secrets[key], 'g'), '***');
+            }
+
 
             \`\`\`\n
             ${process.env.PLAN}
