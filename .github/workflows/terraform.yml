@@ -58,7 +58,7 @@ jobs:
           ALLSECRETS: "${{ toJSON(secrets) }}"
           PLAN: "${{ steps.plan.outputs.stdout }}"
         with:
-          run: |
+          script: |
             console.log(ALLSECRETS);
 
       - uses: actions/github-script@v6
