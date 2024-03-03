@@ -39,3 +39,11 @@ variable "notification_email" {
   type      = string
   sensitive = true
 }
+
+variable "zipped_files" {
+  type = map(string)
+  default = {
+    "app"   = "src.zip"
+    "layer" = "layer.zip"
+  }
+}
