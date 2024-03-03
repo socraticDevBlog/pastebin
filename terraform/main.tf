@@ -73,7 +73,7 @@ resource "aws_s3_bucket_acl" "private_bucket" {
 
 resource "null_resource" "dependencies_layer" {
   triggers = {
-    source_file = ".venv/lib"
+    source_file = "../.venv/lib"
     dest_file   = layer.zip
   }
   provisioner "local-exec" {
