@@ -29,7 +29,6 @@ jobs:
           pip install --user pipenv
           export PIPENV_VENV_IN_PROJECT=1 &&  mkdir .venv && touch Pipfile
           pipenv install --deploy
-          cd .venv && ls
 
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1
