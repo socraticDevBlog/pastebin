@@ -111,4 +111,4 @@ jobs:
         if: github.event.pull_request.merged == true
         run: |
           cd terraform
-          terraform apply -auto-approved tfplan
+          terraform apply tfplan
