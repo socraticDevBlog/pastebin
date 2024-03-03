@@ -19,6 +19,17 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v3
 
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install Lambda (python) dependencies
+        run: |
+          pip install --user pipenv
+          export PIPENV_VENV_IN_PROJECT=1 &&  mkdir .venv && touch Pipfile
+          pipenv install --deploy
+
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -47,7 +58,8 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: cd terraform &&
+        run: |
+          cd terraform
           terraform plan -no-color
         env:
           TF_VAR_notification_email: ${{ secrets.NOTIFICATION_EMAIL }}
@@ -91,6 +103,6 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: exit 1
 
-      # - name: Terraform Apply
-      #   if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-      #   run: terraform apply -auto-approve -input=false
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: terraform apply -auto-approve -input=false
