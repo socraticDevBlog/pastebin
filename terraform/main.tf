@@ -74,7 +74,7 @@ resource "aws_s3_bucket_acl" "private_bucket" {
 resource "null_resource" "dependencies_layer" {
   triggers = {
     source_file = "$HOME/.local/share/virtualenvs/pastebin-${var.virtualenv_id}/lib"
-    dest_file   = var.compressed_dependencies_layer_filename
+    dest_file   = layer.zip
   }
   provisioner "local-exec" {
     command = <<EOT
@@ -86,7 +86,7 @@ resource "null_resource" "dependencies_layer" {
 }
 
 resource "aws_lambda_layer_version" "dependencies_layer" {
-  filename            = var.compressed_dependencies_layer_filename
+  filename            = layer.zip
   layer_name          = "python-layer"
   source_code_hash    = base64sha256(null_resource.dependencies_layer.triggers.dest_file)
   compatible_runtimes = [var.python_runtime]
@@ -96,13 +96,13 @@ data "archive_file" "lambda_zip" {
   type = "zip"
 
   source_dir  = "../src"
-  output_path = "${path.module}/${var.compressed_app_filename}"
+  output_path = "${path.module}/src.zip"
 }
 
 resource "aws_s3_object" "this" {
   bucket = aws_s3_bucket.lambda_bucket.id
 
-  key    = var.compressed_app_filename
+  key    = src.zip
   source = data.archive_file.lambda_zip.output_path
 
   etag = filemd5(data.archive_file.lambda_zip.output_path)

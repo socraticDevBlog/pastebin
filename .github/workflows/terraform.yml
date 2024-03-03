@@ -19,6 +19,18 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v3
 
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install Lambda (python) dependencies
+        run: |
+          pip install --user pipenv &&
+          binarylocation=$(python -m site --user-base)/bin &&
+          export PATH=$PATH:"$binarylocation" &&
+          pipenv install --deploy
+
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1
         with:

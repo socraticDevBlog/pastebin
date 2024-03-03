@@ -30,17 +30,6 @@ variable "virtualenv_id" {
   description = "random ID created by pipenv when installing the project"
 }
 
-variable "compressed_dependencies_layer_filename" {
-  type        = string
-  default     = "layer.zip"
-  description = "a python layer are external dependencies modules lambda app requires to run (ex.: boto3)"
-}
-
-variable "compressed_app_filename" {
-  type    = string
-  default = "src.zip"
-}
-
 variable "cors_allow_origins" {
   type    = set(string)
   default = ["*"]
