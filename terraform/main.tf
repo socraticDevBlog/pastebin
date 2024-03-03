@@ -74,7 +74,7 @@ resource "aws_s3_bucket_acl" "private_bucket" {
 resource "null_resource" "dependencies_layer" {
   triggers = {
     source_file = "../.venv/lib"
-    dest_file   = layer.zip
+    dest_file   = "layer.zip"
   }
   provisioner "local-exec" {
     command = <<EOT
@@ -102,7 +102,7 @@ data "archive_file" "lambda_zip" {
 resource "aws_s3_object" "this" {
   bucket = aws_s3_bucket.lambda_bucket.id
 
-  key    = src.zip
+  key    = "src.zip"
   source = data.archive_file.lambda_zip.output_path
 
   etag = filemd5(data.archive_file.lambda_zip.output_path)
