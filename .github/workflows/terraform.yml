@@ -29,7 +29,8 @@ jobs:
           pip install --user pipenv &&
           binarylocation=$(python -m site --user-base)/bin &&
           export PATH=$PATH:"$binarylocation" &&
-          pipenv install --deploy
+          VIRTUALENV_ID=$(pipenv install --deploy | grep -Eo 'virtualenvs/([^/]+)/bin')
+          echo "TF_VAR_virtualenv_id=$VIRTUALENV_ID" >> $GITHUB_ENV
 
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1
