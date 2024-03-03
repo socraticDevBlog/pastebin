@@ -27,9 +27,7 @@ jobs:
       - name: Install Lambda (python) dependencies
         run: |
           pip install --user pipenv
-          export PIPENV_VENV_IN_PROJECT=1
-          mkdir .venv
-          touch Pipfile
+          export PIPENV_VENV_IN_PROJECT=1 &&  mkdir .venv && touch Pipfile
           pipenv install --deploy
           cd .venv && ls
 
