@@ -108,5 +108,5 @@ jobs:
         run: exit 1
 
       - name: Terraform Apply
-       if: github.event.pull_request.merged == true
-       run: terraform apply -auto-approve tfplan
+        if: github.event.pull_request.merged == true
+        run: terraform apply -auto-approve tfplan
