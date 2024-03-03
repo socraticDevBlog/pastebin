@@ -59,7 +59,6 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
-          ls .venv/lib
           cd terraform
           terraform plan -no-color
         env:
