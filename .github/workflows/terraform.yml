@@ -1,9 +1,10 @@
-name: "Terraform Plan only action"
+name: "Terraform plan on PR and apply on merge to main"
 on:
   pull_request:
-  push:
-    branches:
-      - main
+    types:
+      - opened
+      - synchronize
+      - closed
 permissions:
   id-token: write # This is required for aws oidc connection
   contents: read # This is required for actions/checkout
@@ -63,7 +64,7 @@ jobs:
         id: plan
         run: |
           cd terraform
-          terraform plan -no-color
+          terraform plan -no-color -out=tfplan
         env:
           TF_VAR_notification_email: ${{ secrets.NOTIFICATION_EMAIL }}
         continue-on-error: false
@@ -107,5 +108,5 @@ jobs:
         run: exit 1
 
       - name: Terraform Apply
-        if: github.event.action == 'closed' && github.event.pull_request.merged == true
-        run: terraform apply -auto-approve -input=false
+       if: github.event.pull_request.merged == true
+       run: terraform apply -auto-approve tfplan
