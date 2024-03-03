@@ -1,6 +1,9 @@
 name: "Terraform Plan only action"
 on:
   pull_request:
+  push:
+    branches:
+      - main
 permissions:
   id-token: write # This is required for aws oidc connection
   contents: read # This is required for actions/checkout
@@ -104,5 +107,5 @@ jobs:
         run: exit 1
 
       - name: Terraform Apply
-        if: github.ref == 'refs/heads/main' && github.event_name == 'merge'
+        if: github.event.action == 'closed' && github.event.pull_request.merged == true
         run: terraform apply -auto-approve -input=false
