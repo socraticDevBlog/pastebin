@@ -86,7 +86,7 @@ resource "null_resource" "dependencies_layer" {
 }
 
 resource "aws_lambda_layer_version" "dependencies_layer" {
-  filename            = layer.zip
+  filename            = "layer.zip"
   layer_name          = "python-layer"
   source_code_hash    = base64sha256(null_resource.dependencies_layer.triggers.dest_file)
   compatible_runtimes = [var.python_runtime]
