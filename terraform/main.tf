@@ -81,6 +81,7 @@ resource "null_resource" "dependencies_layer" {
       mkdir python
       cp -r ${self.triggers.source_file} python/
       zip -r ${self.triggers.dest_file} python/
+      ls -lR python
     EOT
   }
 }
@@ -90,6 +91,7 @@ resource "aws_lambda_layer_version" "dependencies_layer" {
   layer_name          = "python-layer"
   source_code_hash    = base64sha256(null_resource.dependencies_layer.triggers.dest_file)
   compatible_runtimes = [var.python_runtime]
+  depends_on          = [null_resource.dependencies_layer]
 }
 
 data "archive_file" "lambda_zip" {
