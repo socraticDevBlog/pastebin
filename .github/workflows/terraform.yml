@@ -65,6 +65,7 @@ jobs:
         run: |
           cd terraform
           terraform plan -no-color -out=tfplan
+          ls
         env:
           TF_VAR_notification_email: ${{ secrets.NOTIFICATION_EMAIL }}
         continue-on-error: false
