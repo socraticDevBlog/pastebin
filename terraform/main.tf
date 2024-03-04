@@ -71,24 +71,16 @@ resource "aws_s3_bucket_acl" "private_bucket" {
   acl        = "private"
 }
 
-resource "null_resource" "dependencies_layer" {
-  triggers = {
-    source_file = "../.venv/lib"
-    dest_file   = var.zipped_files["layer"]
-  }
-  provisioner "local-exec" {
-    command = <<EOT
-      mkdir python
-      cp -r ${self.triggers.source_file} python/
-      zip -r ${self.triggers.dest_file} python/
-    EOT
-  }
+data "archive_file" "layer_zip" {
+  type        = "zip"
+  source_dir  = "../.venv/lib"
+  output_path = "${path.module}/${var.zipped_files["layer"]}"
 }
 
 resource "aws_lambda_layer_version" "dependencies_layer" {
   filename            = var.zipped_files["layer"]
   layer_name          = "python-layer"
-  source_code_hash    = base64sha256(null_resource.dependencies_layer.triggers.dest_file)
+  source_code_hash    = base64sha256(data.archive_file.layer_zip.output_path)
   compatible_runtimes = [var.python_runtime]
 }
 
