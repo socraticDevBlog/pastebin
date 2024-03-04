@@ -108,7 +108,7 @@ jobs:
         run: exit 1
 
       - name: Terraform Apply
-        if: github.event.pull_request.merged == true
+        #if: github.event.pull_request.merged == true
         run: |
           cd terraform
           terraform apply tfplan
