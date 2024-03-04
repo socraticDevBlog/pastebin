@@ -71,24 +71,8 @@ resource "aws_s3_bucket_acl" "private_bucket" {
   acl        = "private"
 }
 
-# resource "null_resource" "dependencies_layer" {
-#   triggers = {
-#     source_file = "../.venv/lib"
-#     dest_file   = var.zipped_files["layer"]
-#   }
-#   provisioner "local-exec" {
-#     command = <<EOT
-#       mkdir python
-#       cp -r ${self.triggers.source_file} python/
-#       zip -r ${self.triggers.dest_file} python/
-#       ls -lR python
-#     EOT
-#   }
-# }
-
 data "archive_file" "layer_zip" {
-  type = "zip"
-
+  type        = "zip"
   source_dir  = "../.venv/lib"
   output_path = "${path.module}/${var.zipped_files["layer"]}"
 }
