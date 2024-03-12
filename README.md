@@ -140,7 +140,7 @@ pipenv run sam build && pipenv run sam local start-api
 To run tests, run the following command
 
 ```bash
-pipenv run test -v
+pipenv run test
 ```
 
 ## deploying
@@ -190,7 +190,7 @@ curl -i  -X POST -H "Content-Type: application/json" -d '{"content":"one two tre
 
 - [x] safe-guard CI by automated unit tests suite (GitHub Action)
 
-- [ ] implement CI 'better practices' automated safe-guards
+- [x] implement CI 'better practices' automated safe-guards
 
 - [x] develop a lambda that will Create and Read pastes
 
