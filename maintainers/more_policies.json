@@ -1,0 +1,77 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor3",
+            "Effect": "Allow",
+            "Action": "apigateway:GET",
+            "Resource": "*"
+        },
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "logs:ListTagsLogGroup",
+                "s3:GetLifecycleConfiguration",
+                "s3:GetBucketTagging",
+                "lambda:GetLayerVersion",
+                "lambda:ListVersionsByFunction",
+                "s3:ListBucketVersions",
+                "s3:GetBucketLogging",
+                "dynamodb:ListTagsOfResource",
+                "lambda:GetFunctionConfiguration",
+                "s3:ListBucket",
+                "s3:GetAccelerateConfiguration",
+                "s3:GetBucketPolicy",
+                "s3:GetBucketObjectLockConfiguration",
+                "s3:GetEncryptionConfiguration",
+                "s3:GetBucketRequestPayment",
+                "dynamodb:DescribeTable",
+                "cloudwatch:ListTagsForResource",
+                "s3:GetBucketCors",
+                "s3:GetObjectTagging",
+                "dynamodb:DescribeContinuousBackups",
+                "s3:GetBucketOwnershipControls",
+                "sns:ListTagsForResource",
+                "s3:GetBucketPolicyStatus",
+                "sns:GetTopicAttributes",
+                "s3:GetBucketWebsite",
+                "lambda:GetFunction",
+                "lambda:GetFunctionUrlConfig",
+                "s3:GetBucketVersioning",
+                "s3:GetBucketAcl",
+                "dynamodb:DescribeTimeToLive",
+                "lambda:GetFunctionCodeSigningConfig",
+                "s3:GetReplicationConfiguration",
+                "s3:PutObject",
+                "s3:GetObject",
+                "lambda:GetFunctionConcurrency",
+                "lambda:GetFunctionEventInvokeConfig",
+                "cloudwatch:DescribeAlarms",
+                "s3:PutBucketObjectLockConfiguration",
+                "lambda:GetPolicy"
+            ],
+            "Resource": [
+                "arn:aws:lambda:ca-central-1:{your aws account number}:function:*",
+                "arn:aws:lambda:ca-central-1:{your aws account number}:layer:*:*",
+                "arn:aws:sns:ca-central-1:{your aws account number}:*",
+                "arn:aws:s3:::{your state file bucket name}/*",
+                "arn:aws:s3:::{your lambda s3 code bucket}/*",
+                "arn:aws:s3:::{your state file bucket name}",
+                "arn:aws:s3:::{your lambda s3 code bucket}",
+                "arn:aws:cloudwatch:ca-central-1:{your aws account number}:alarm:*",
+                "arn:aws:dynamodb:ca-central-1:{your aws account number}:table/paste",
+                "arn:aws:logs:ca-central-1:{your aws account number}:log-group:*"
+            ]
+        },
+        {
+            "Sid": "VisualEditor1",
+            "Effect": "Allow",
+            "Action": [
+                "logs:DescribeLogGroups",
+                "sns:GetSubscriptionAttributes"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
