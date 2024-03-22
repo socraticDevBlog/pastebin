@@ -167,3 +167,6 @@ terraform-provider*
 *.zip
 
 creds
+
+# to prevent a dev from commiting and pushing values that should not be public ;)
+assume-role.sh 
