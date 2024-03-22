@@ -162,7 +162,8 @@ cython_debug/
 .aws-sam
 src.zip
 
-backend.tf
 terraform-provider*
 .terraform*
 *.zip
+
+creds
