@@ -39,50 +39,17 @@ def get_handler(event, context, db: DB):
         logger.error(f"GET-failed to retrieve requested paste-id {id}")
         return {"statusCode": 404}
 
-    try:
-        user_agent = event.get("headers", {}).get("User-Agent", "")
-        is_web_browser = "Mozilla" in user_agent or "AppleWebKit" in user_agent
-    except:
-        is_web_browser = False
-
-    if is_web_browser:
-        response_html = """
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>Saved Content</title>
-                    <meta charset="UTF-8">
-                </head>
-                <body>
-                    <pre>{}</pre>
-                </body>
-                </html>
-            """.format(
-            content
-        )
-        return {
-            "statusCode": 200,
-            "isBase64Encoded": False,
-            "headers": {
-                "Content-Type": "text/html; charset=utf-8",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
-            "body": response_html,
-        }
-    else:
-        return {
-            "statusCode": 200,
-            "isBase64Encoded": False,
-            "headers": {
-                "content-type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
-            "body": json.dumps(content),
-        }
+    return {
+        "statusCode": 200,
+        "isBase64Encoded": False,
+        "headers": {
+            "content-type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
+            "Access-Control-Allow-Headers": "Content-Type",
+        },
+        "body": json.dumps(content),
+    }
 
 
 def post_handler(event, context, db: DB):
