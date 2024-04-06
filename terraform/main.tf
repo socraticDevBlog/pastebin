@@ -231,13 +231,13 @@ resource "aws_apigatewayv2_stage" "default" {
   }
 
   route_settings {
-    route_key              = aws_apigatewayv2_route.get.route_key
+    route_key              = aws_apigatewayv2_route.read.route_key
     throttling_burst_limit = 5
     throttling_rate_limit  = 2
   }
 
   route_settings {
-    route_key              = aws_apigatewayv2_route.post.route_key
+    route_key              = aws_apigatewayv2_route.write.route_key
     throttling_burst_limit = 2
     throttling_rate_limit  = 1
   }
@@ -253,8 +253,16 @@ resource "aws_apigatewayv2_integration" "apigw_lambda" {
   integration_method = "POST"
 }
 
-resource "aws_apigatewayv2_route" "routes" {
-  for_each = { for route in var.routes : route => route }
+resource "aws_apigatewayv2_route" "read" {
+  for_each = { for route in var.routes_read : route => route }
+
+  route_key = each.value
+  api_id    = aws_apigatewayv2_api.http_lambda.id
+  target    = "integrations/${aws_apigatewayv2_integration.apigw_lambda.id}"
+}
+
+resource "aws_apigatewayv2_route" "write" {
+  for_each = { for route in var.routes_write : route => route }
 
   route_key = each.value
   api_id    = aws_apigatewayv2_api.http_lambda.id

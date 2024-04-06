@@ -1,7 +1,13 @@
-variable "routes" {
-  type        = list(string)
-  description = "list of API routes to be configured in API Gateway"
-  default     = ["GET /paste", "GET /paste/api", "POST /paste", "POST /paste/api", "OPTIONS /paste"]
+variable "routes_read" {
+  type        = set(string)
+  description = "list of API GET routes to be configured in API Gateway"
+  default     = ["GET /paste", "GET /paste/api", "OPTIONS /paste"]
+}
+
+variable "routes_write" {
+  type        = set(string)
+  description = "list of API POST routes to be configured in API Gateway"
+  default     = ["POST /paste", "POST /paste/api"]
 }
 
 variable "region" {
