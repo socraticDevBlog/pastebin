@@ -1,3 +1,9 @@
+variable "routes" {
+  type        = list(string)
+  description = "list of API routes to be configured in API Gateway"
+  default     = ["GET /paste", "GET /paste/api", "POST /paste", "POST /paste/api", "OPTIONS /paste"]
+}
+
 variable "region" {
   type    = string
   default = "ca-central-1"
