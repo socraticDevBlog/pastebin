@@ -31,13 +31,40 @@ def _dynamodb_endpoint_by_os(os: str):
     return "http://host.docker.internal:8000"
 
 
-def get_handler(event, context, db: DB):
+def get_handler(event, context, db: DB, is_web_browser: bool = False):
     try:
         paste = PasteDataAware(db=db, id=event["queryStringParameters"]["id"])
         content = paste.read()
     except:
         logger.error(f"GET-failed to retrieve requested paste-id {id}")
         return {"statusCode": 404}
+
+    if is_web_browser:
+        response_html = """
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <title>Saved Content</title>
+                    <meta charset="UTF-8">
+                </head>
+                <body>
+                    <pre>{}</pre>
+                </body>
+            </html>
+            """.format(
+            content
+        )
+        return {
+            "statusCode": 200,
+            "isBase64Encoded": False,
+            "headers": {
+                "Content-Type": "text/html; charset=utf-8",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
+                "Access-Control-Allow-Headers": "Content-Type",
+            },
+            "body": response_html,
+        }
 
     return {
         "statusCode": 200,
@@ -116,6 +143,7 @@ def lambda_handler(event, context):
 
     """
     method = event["httpMethod"]
+    path = event["path"]
 
     is_local_envir = os.environ["AWS_SAM_LOCAL"] == "true"
     db = DB(
@@ -125,7 +153,17 @@ def lambda_handler(event, context):
     )
 
     if method == "GET":
-        return get_handler(context=context, event=event, db=db)
+        if "/api" in path:
+            return get_handler(context=context, event=event, db=db)
+
+        try:
+            user_agent = event.get("headers", {}).get("User-Agent", "")
+            is_web_browser = "Mozilla" in user_agent or "AppleWebKit" in user_agent
+            return get_handler(
+                context=context, event=event, db=db, is_web_browser=is_web_browser
+            )
+        except Exception as e:
+            return get_handler(context=context, event=event, db=db)
     elif method == "POST":
         return post_handler(context=context, event=event, db=db)
     else:

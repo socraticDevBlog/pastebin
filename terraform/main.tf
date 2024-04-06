@@ -254,16 +254,18 @@ resource "aws_apigatewayv2_integration" "apigw_lambda" {
 }
 
 resource "aws_apigatewayv2_route" "get" {
-  api_id = aws_apigatewayv2_api.http_lambda.id
+  for_each = toset("GET /paste", "GET /paste/api")
 
-  route_key = "GET /paste"
+  route_key = each.value
+  api_id    = aws_apigatewayv2_api.http_lambda.id
   target    = "integrations/${aws_apigatewayv2_integration.apigw_lambda.id}"
 }
 
 resource "aws_apigatewayv2_route" "post" {
-  api_id = aws_apigatewayv2_api.http_lambda.id
+  for_each = toset("POST /paste", "POST /paste/api")
 
-  route_key = "POST /paste"
+  route_key = each.value
+  api_id    = aws_apigatewayv2_api.http_lambda.id
   target    = "integrations/${aws_apigatewayv2_integration.apigw_lambda.id}"
 }
 
