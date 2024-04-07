@@ -234,7 +234,7 @@ resource "aws_apigatewayv2_stage" "default" {
     for_each = aws_apigatewayv2_route.read
 
     content {
-      route_key              = lookup(each.value, "route_key", "")
+      route_key              = route_settings.value.route_key
       throttling_burst_limit = 5
       throttling_rate_limit  = 2
     }
@@ -244,7 +244,7 @@ resource "aws_apigatewayv2_stage" "default" {
     for_each = aws_apigatewayv2_route.write
 
     content {
-      route_key              = lookup(each.value, "route_key", "")
+      route_key              = route_settings.value.route_key
       throttling_burst_limit = 2
       throttling_rate_limit  = 1
     }
