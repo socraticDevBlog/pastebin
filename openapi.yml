@@ -14,7 +14,7 @@ tags:
   - name: "pastes"
     description: "some strings a user wants to save for later"
 paths:
-  /paste:
+  /paste/api:
     get:
       summary: Retrieve a paste by ID
       description: open endpoint to retrieve a paste by ID

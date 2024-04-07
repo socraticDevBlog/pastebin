@@ -1,0 +1,7 @@
+{
+    "queryStringParameters": {
+      "id": "f679e04f75bb74285359000765ea2af86adb198a"
+    },
+    "httpMethod": "GET",
+    "path": "/api"
+  }

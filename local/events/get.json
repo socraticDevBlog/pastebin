@@ -1,6 +1,10 @@
 {
   "queryStringParameters": {
-    "id": "f85d17b2104c753950f42cb20938637c15f4e8b4"
+    "id": "f679e04f75bb74285359000765ea2af86adb198a"
   },
-  "httpMethod": "GET"
+  "httpMethod": "GET",
+  "path": "/",
+  "headers": {
+    "User-Agent": "Mozilla"
+  }
 }

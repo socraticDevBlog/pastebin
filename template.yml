@@ -34,10 +34,20 @@ Resources:
           Properties:
             Path: /paste
             Method: get
+        GetApiPaste:
+          Type: Api
+          Properties:
+            Path: /paste/api
+            Method: get
         CreatePaste:
           Type: Api
           Properties:
             Path: /paste
+            Method: post
+        CreateApiPaste:
+          Type: Api
+          Properties:
+            Path: /paste/api
             Method: post
         cors:
           Type: Api

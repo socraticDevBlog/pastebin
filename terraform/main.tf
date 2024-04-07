@@ -230,18 +230,25 @@ resource "aws_apigatewayv2_stage" "default" {
     throttling_rate_limit  = 1
   }
 
-  route_settings {
-    route_key              = aws_apigatewayv2_route.get.route_key
-    throttling_burst_limit = 5
-    throttling_rate_limit  = 2
+  dynamic "route_settings" {
+    for_each = aws_apigatewayv2_route.read
+
+    content {
+      route_key              = route_settings.value.route_key
+      throttling_burst_limit = 5
+      throttling_rate_limit  = 2
+    }
   }
 
-  route_settings {
-    route_key              = aws_apigatewayv2_route.post.route_key
-    throttling_burst_limit = 2
-    throttling_rate_limit  = 1
-  }
+  dynamic "route_settings" {
+    for_each = aws_apigatewayv2_route.write
 
+    content {
+      route_key              = route_settings.value.route_key
+      throttling_burst_limit = 2
+      throttling_rate_limit  = 1
+    }
+  }
   depends_on = [aws_cloudwatch_log_group.api_gw]
 }
 
@@ -253,24 +260,19 @@ resource "aws_apigatewayv2_integration" "apigw_lambda" {
   integration_method = "POST"
 }
 
-resource "aws_apigatewayv2_route" "get" {
-  api_id = aws_apigatewayv2_api.http_lambda.id
+resource "aws_apigatewayv2_route" "read" {
+  for_each = var.routes_read
 
-  route_key = "GET /paste"
+  route_key = each.key
+  api_id    = aws_apigatewayv2_api.http_lambda.id
   target    = "integrations/${aws_apigatewayv2_integration.apigw_lambda.id}"
 }
 
-resource "aws_apigatewayv2_route" "post" {
-  api_id = aws_apigatewayv2_api.http_lambda.id
+resource "aws_apigatewayv2_route" "write" {
+  for_each = var.routes_write
 
-  route_key = "POST /paste"
-  target    = "integrations/${aws_apigatewayv2_integration.apigw_lambda.id}"
-}
-
-resource "aws_apigatewayv2_route" "options" {
-  api_id = aws_apigatewayv2_api.http_lambda.id
-
-  route_key = "OPTIONS /paste"
+  route_key = each.key
+  api_id    = aws_apigatewayv2_api.http_lambda.id
   target    = "integrations/${aws_apigatewayv2_integration.apigw_lambda.id}"
 }
 

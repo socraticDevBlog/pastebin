@@ -26,6 +26,6 @@ output "api_gateway_arn" {
   value = aws_apigatewayv2_api.http_lambda.arn
 }
 
-output "api_gateway_route" {
-  value = aws_apigatewayv2_route.get.route_key
+output "api_gateway_routes" {
+  value = aws_apigatewayv2_route.read
 }
