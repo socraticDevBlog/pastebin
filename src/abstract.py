@@ -6,6 +6,8 @@ from typing import Dict
 
 DEFAULT_ENCODING = "utf-8"
 
+KEY_CLIENT_ID = "client_identifier"
+
 
 class Paste:
     """
@@ -25,7 +27,13 @@ class Paste:
 
     """
 
-    def __init__(self, content: str = None, id: str = None, timestamp: int = None):
+    def __init__(
+        self,
+        content: str = None,
+        id: str = None,
+        timestamp: int = None,
+        client_identifier: str = None,
+    ):
         if content is not None:
             self._base_64_content = self._base64_encode_str(content=content)
         else:
@@ -41,14 +49,24 @@ class Paste:
         else:
             self._unix_timestamp = timestamp
 
+        self._metadata = {}
+
+        if client_identifier is not None:
+            self._metadata[KEY_CLIENT_ID] = client_identifier
+
     def dict(self) -> Dict:
+
         return {
             "id": self.id,
             "content": self._base64_decode_content(),
             "isBase64Encoded": False,
             "encoding": DEFAULT_ENCODING,
             "created_time_epoch": self._unix_timestamp,
+            "metadata": self._metadata,
         }
+
+    def get_client_identifier(self):
+        return self._metadata.get(KEY_CLIENT_ID)
 
     def _base64_decode_content(self, encoding: str = DEFAULT_ENCODING) -> str:
         base64_content_bytes = self._base_64_content.encode(encoding=encoding)
