@@ -95,7 +95,7 @@ def post_handler(event, context, db: DB):
         logger.warning(f'POST- unable to load content from event["body"])["content"]')
         content = event["content"]
 
-    paste = PasteDataAware(content=content, db=db)
+    paste = PasteDataAware(content=content, db=db, client_identifier=client_ip)
 
     try:
         id = paste.insert()
