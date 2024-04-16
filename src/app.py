@@ -33,7 +33,6 @@ def _dynamodb_endpoint_by_os(os: str):
 
 def get_pastes_handler(event, context, db: DB):
     client_ip = event["requestContext"]["identity"]["sourceIp"]
-    print(f"my client ip: {client_ip}")
     paste_id_array = db.paste_ids_by_client_identifier(client_identifier=client_ip)
     return {
         "statusCode": 200,
