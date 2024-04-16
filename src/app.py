@@ -31,6 +31,23 @@ def _dynamodb_endpoint_by_os(os: str):
     return "http://host.docker.internal:8000"
 
 
+def get_pastes_handler(event, context, db: DB):
+    client_ip = event["requestContext"]["identity"]["sourceIp"]
+    print(f"my client ip: {client_ip}")
+    paste_id_array = db.paste_ids_by_client_identifier(client_identifier=client_ip)
+    return {
+        "statusCode": 200,
+        "isBase64Encoded": False,
+        "headers": {
+            "content-type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
+            "Access-Control-Allow-Headers": "Content-Type",
+        },
+        "body": json.dumps(paste_id_array),
+    }
+
+
 def get_handler(event, context, db: DB, is_web_browser: bool = False):
     try:
         paste = PasteDataAware(db=db, id=event["queryStringParameters"]["id"])
@@ -153,6 +170,9 @@ def lambda_handler(event, context):
     )
 
     if method == "GET":
+        if "/api/pastes" in path:
+            return get_pastes_handler(context=context, event=event, db=db)
+
         if "/api" in path:
             return get_handler(context=context, event=event, db=db)
 
