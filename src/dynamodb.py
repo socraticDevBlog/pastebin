@@ -69,3 +69,30 @@ class DB:
             raise Not_Found
 
         return response
+
+    def paste_ids_by_client_identifier(self, client_identifier: str, count: int = 5):
+        """
+
+        paste_ids_by_client_identifier
+
+        fetches n Paste's ID from table based on a client_identifier
+
+        client_identifier is by default client's IP address
+
+        IDs are also sorted from most recent to less recent
+
+
+        """
+        response = self._table.scan(
+            FilterExpression="metadata.client_identifier = :cid",
+            ExpressionAttributeValues={":cid": client_identifier},
+        )
+        items = response["Items"]
+        sorted_items = sorted(
+            items, key=lambda x: x["created_time_epoch"], reverse=True
+        )
+        ret = []
+        for x in sorted_items[:count]:
+            ret.append(x["id"])
+
+        return ret

@@ -1,0 +1,9 @@
+{
+  "httpMethod": "GET",
+  "path": "/api/pastes",
+  "requestContext": {
+    "identity": {
+      "sourceIp": "127.0.0.1"
+    }
+  }
+}
