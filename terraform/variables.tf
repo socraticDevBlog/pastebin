@@ -1,7 +1,7 @@
 variable "routes_read" {
   type        = set(string)
   description = "list of API GET routes to be configured in API Gateway"
-  default     = ["GET /paste", "GET /paste/api", "OPTIONS /paste"]
+  default     = ["GET /paste", "GET /paste/api", "GET /paste/api/pastes", "OPTIONS /paste"]
 }
 
 variable "routes_write" {
@@ -50,6 +50,7 @@ variable "cors_allow_origins" {
 variable "notification_email" {
   type      = string
   sensitive = true
+  default   = "maximebonin@outlook.com"
 }
 
 variable "zipped_files" {
