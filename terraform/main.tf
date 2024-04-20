@@ -161,7 +161,8 @@ resource "aws_iam_policy" "lambda_exec_role" {
             "Action": [
                 "dynamodb:GetItem",
                 "dynamodb:PutItem",
-                "dynamodb:UpdateItem"
+                "dynamodb:UpdateItem",
+                "dynamodb:Scan"
             ],
             "Resource": "arn:aws:dynamodb:*:*:table/${var.dynamodb_table}"
         },
