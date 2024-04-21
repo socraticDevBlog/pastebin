@@ -50,7 +50,6 @@ variable "cors_allow_origins" {
 variable "notification_email" {
   type      = string
   sensitive = true
-  default   = "maximebonin@outlook.com"
 }
 
 variable "zipped_files" {
@@ -59,4 +58,10 @@ variable "zipped_files" {
     "app"   = "src.zip"
     "layer" = "layer.zip"
   }
+}
+
+variable "api_base_url" {
+  type        = string
+  description = "base url to the API"
+  default     = "https://paste.socratic.dev"
 }
