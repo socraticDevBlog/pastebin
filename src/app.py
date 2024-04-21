@@ -3,6 +3,7 @@ import json
 import os
 
 from model import PasteDataAware
+from api_handler import ApiHandler
 from dynamodb import DB
 import logging
 
@@ -33,7 +34,10 @@ def _dynamodb_endpoint_by_os(os: str):
 
 def get_pastes_handler(event, context, db: DB):
     client_ip = event["requestContext"]["identity"]["sourceIp"]
-    paste_id_array = db.paste_ids_by_client_identifier(client_identifier=client_ip)
+
+    api_handler = ApiHandler(db=db, base_url=os.environ.get("BASE_URL"))
+    paste_urls = api_handler.latest_pastes_urls(client_identifier=client_ip)
+
     return {
         "statusCode": 200,
         "isBase64Encoded": False,
@@ -43,7 +47,7 @@ def get_pastes_handler(event, context, db: DB):
             "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
             "Access-Control-Allow-Headers": "Content-Type",
         },
-        "body": json.dumps(paste_id_array),
+        "body": json.dumps(paste_urls),
     }
 
 

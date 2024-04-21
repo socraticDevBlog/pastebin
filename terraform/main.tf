@@ -119,7 +119,8 @@ resource "aws_lambda_function" "apigw_lambda_ddb" {
     variables = {
       DDB_TABLE     = var.dynamodb_table,
       AWS_SAM_LOCAL = "",
-      DEVENV        = ""
+      DEVENV        = "",
+      BASE_URL      = var.api_base_url
     }
   }
   layers     = [aws_lambda_layer_version.dependencies_layer.arn]
