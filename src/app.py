@@ -3,7 +3,7 @@ import json
 import os
 
 from model import PasteDataAware
-from api_handler import ApiHandler, hash_value
+from api_handler import ApiHandler
 from dynamodb import DB
 import logging
 import hashlib
