@@ -63,5 +63,4 @@ variable "zipped_files" {
 variable "api_base_url" {
   type        = string
   description = "base url to the API"
-  default     = "https://paste.socratic.dev"
 }
