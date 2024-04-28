@@ -6,6 +6,14 @@ from model import PasteDataAware
 from api_handler import ApiHandler
 from dynamodb import DB
 import logging
+import hashlib
+
+
+def hash_value(value: str, encoding: str = "utf-8") -> str:
+    value_bytes = str(value).encode(encoding=encoding)
+    hash_object = hashlib.md5()
+    hash_object.update(value_bytes)
+    return hash_object.hexdigest()
 
 
 logger = logging.getLogger()
@@ -33,10 +41,16 @@ def _dynamodb_endpoint_by_os(os: str):
 
 
 def get_pastes_handler(event, context, db: DB):
-    client_ip = event["requestContext"]["identity"]["sourceIp"]
+    query_params = event.get("queryStringParameters", {})
+
+    client_id = ""
+    try:
+        client_id = query_params.get("client_id")
+    except:
+        client_id = event["requestContext"]["identity"]["sourceIp"]
 
     api_handler = ApiHandler(db=db, base_url=os.environ.get("BASE_URL"))
-    paste_urls = api_handler.latest_pastes_urls(client_identifier=client_ip)
+    paste_urls = api_handler.latest_pastes_urls(client_identifier=hash_value(client_id))
 
     return {
         "statusCode": 200,
@@ -53,7 +67,8 @@ def get_pastes_handler(event, context, db: DB):
 
 def get_handler(event, context, db: DB, is_web_browser: bool = False):
     try:
-        paste = PasteDataAware(db=db, id=event["queryStringParameters"]["id"])
+        id = event["queryStringParameters"]["id"]
+        paste = PasteDataAware(db=db, id=id)
         content = paste.read()
     except:
         logger.error(f"GET-failed to retrieve requested paste-id {id}")
@@ -115,7 +130,15 @@ def post_handler(event, context, db: DB):
         logger.warning(f'POST- unable to load content from event["body"])["content"]')
         content = event["content"]
 
-    paste = PasteDataAware(content=content, db=db, client_identifier=client_ip)
+    client_id = ""
+    try:
+        client_id = json.loads(event["body"], strict=False)["client_id"]
+    except:
+        client_id = client_ip
+
+    paste = PasteDataAware(
+        content=content, db=db, client_identifier=hash_value(client_id)
+    )
 
     try:
         id = paste.insert()
