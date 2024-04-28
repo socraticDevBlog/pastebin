@@ -67,7 +67,7 @@ jobs:
           terraform plan -no-color -out=tfplan
         env:
           TF_VAR_notification_email: ${{ secrets.NOTIFICATION_EMAIL }}
-          TF_VAR_base_url: ${{ secrets.BASE_URL }}
+          TF_VAR_api_base_url: ${{ secrets.BASE_URL }}
         continue-on-error: false
 
       - uses: actions/github-script@v6
