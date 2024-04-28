@@ -6,6 +6,14 @@ from model import PasteDataAware
 from api_handler import ApiHandler
 from dynamodb import DB
 import logging
+import hashlib
+
+
+def hash_value(value: str, encoding: str = "utf-8") -> str:
+    value_bytes = str(value).encode(encoding=encoding)
+    hash_object = hashlib.md5()
+    hash_object.update(value_bytes)
+    return hash_object.hexdigest()
 
 
 logger = logging.getLogger()
@@ -34,16 +42,15 @@ def _dynamodb_endpoint_by_os(os: str):
 
 def get_pastes_handler(event, context, db: DB):
     query_params = event.get("queryStringParameters", {})
-    has_client_id = any(key == "client_id" for key in query_params)
 
     client_id = ""
-    if has_client_id:
+    try:
         client_id = query_params.get("client_id")
-    else:
+    except:
         client_id = event["requestContext"]["identity"]["sourceIp"]
 
     api_handler = ApiHandler(db=db, base_url=os.environ.get("BASE_URL"))
-    paste_urls = api_handler.latest_pastes_urls(client_identifier=client_id)
+    paste_urls = api_handler.latest_pastes_urls(client_identifier=hash_value(client_id))
 
     return {
         "statusCode": 200,
@@ -129,7 +136,9 @@ def post_handler(event, context, db: DB):
     except:
         client_id = client_ip
 
-    paste = PasteDataAware(content=content, db=db, client_identifier=client_id)
+    paste = PasteDataAware(
+        content=content, db=db, client_identifier=hash_value(client_id)
+    )
 
     try:
         id = paste.insert()
