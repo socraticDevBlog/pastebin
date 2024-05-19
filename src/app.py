@@ -91,7 +91,7 @@ def get_handler(event, context, db: DB, is_web_browser: bool = False):
         )
         return {
             "statusCode": 200,
-            "isBase64Encoded": False,
+            "isBase64Encoded": paste.is_base64_encoded(content=content),
             "headers": {
                 "Content-Type": "text/html; charset=utf-8",
                 "Access-Control-Allow-Origin": "*",
