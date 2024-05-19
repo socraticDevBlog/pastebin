@@ -40,5 +40,6 @@ class PasteDataAware(Paste):
         Returns:
             str: Paste content
         """
+        self._base_64_content = self._db.get_item(self.id)["Item"]["content"]
 
-        return self._db.get_item(self.id)["Item"]["content"]
+        return self._base64_decode_content()
