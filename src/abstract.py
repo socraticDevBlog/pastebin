@@ -3,7 +3,6 @@ import hashlib
 import time
 from typing import Dict
 
-
 DEFAULT_ENCODING = "utf-8"
 
 KEY_CLIENT_ID = "client_identifier"
@@ -34,10 +33,12 @@ class Paste:
         timestamp: int = None,
         client_identifier: str = None,
     ):
-        if content is not None:
+        if content is None:
+            self._base_64_content = ""
+        elif not self.is_base64_encoded(content=content):
             self._base_64_content = self._base64_encode_str(content=content)
         else:
-            self._base_64_content = ""
+            self._base_64_content = content
         if id is None:
             self.id = hashlib.sha1(
                 self._base_64_content.encode(DEFAULT_ENCODING)
@@ -58,8 +59,8 @@ class Paste:
 
         return {
             "id": self.id,
-            "content": self._base64_decode_content(),
-            "isBase64Encoded": False,
+            "content": self._base_64_content,
+            "isBase64Encoded": True,
             "encoding": DEFAULT_ENCODING,
             "created_time_epoch": self._unix_timestamp,
             "metadata": self._metadata,
@@ -76,3 +77,13 @@ class Paste:
     def _base64_encode_str(self, content: str, encoding: str = DEFAULT_ENCODING) -> str:
         b = base64.b64encode(bytes(content, encoding))
         return b.decode(encoding)
+
+    def is_base64_encoded(self, content: str, encoding: str = DEFAULT_ENCODING) -> bool:
+        try:
+            decoded_content = base64.b64decode(content).decode(encoding)
+            return (
+                base64.b64encode(decoded_content.encode(encoding)).decode(encoding)
+                == content
+            )
+        except Exception:
+            return False
