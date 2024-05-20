@@ -1,12 +1,13 @@
-import json
-
-import os
+import json, os, hashlib
+import logging
 
 from model import PasteDataAware
 from api_handler import ApiHandler
 from dynamodb import DB
-import logging
-import hashlib
+from lambda_handlers import get_pastes_handler
+
+logger = logging.getLogger()
+logger.setLevel("INFO")
 
 
 def hash_value(value: str, encoding: str = "utf-8") -> str:
@@ -14,10 +15,6 @@ def hash_value(value: str, encoding: str = "utf-8") -> str:
     hash_object = hashlib.md5()
     hash_object.update(value_bytes)
     return hash_object.hexdigest()
-
-
-logger = logging.getLogger()
-logger.setLevel("INFO")
 
 
 def _dynamodb_endpoint_by_os(os: str):
@@ -38,31 +35,6 @@ def _dynamodb_endpoint_by_os(os: str):
         return "http://localhost:8000"
 
     return "http://host.docker.internal:8000"
-
-
-def get_pastes_handler(event, context, db: DB):
-    query_params = event.get("queryStringParameters", {})
-
-    client_id = ""
-    try:
-        client_id = query_params.get("client_id")
-    except:
-        client_id = event["requestContext"]["identity"]["sourceIp"]
-
-    api_handler = ApiHandler(db=db, base_url=os.environ.get("BASE_URL"))
-    paste_urls = api_handler.latest_pastes_urls(client_identifier=hash_value(client_id))
-
-    return {
-        "statusCode": 200,
-        "isBase64Encoded": False,
-        "headers": {
-            "content-type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
-            "Access-Control-Allow-Headers": "Content-Type",
-        },
-        "body": json.dumps(paste_urls),
-    }
 
 
 def get_handler(event, context, db: DB, is_web_browser: bool = False):
@@ -195,9 +167,21 @@ def lambda_handler(event, context):
         dynamodb_endpoint_url=_dynamodb_endpoint_by_os(os=os.environ["DEVENV"]),
     )
 
+    api_handler = ApiHandler(db=db, base_url=os.environ.get("BASE_URL"))
+
     if method == "GET":
         if "/api/pastes" in path:
-            return get_pastes_handler(context=context, event=event, db=db)
+            query_params = event.get("queryStringParameters", {})
+
+            try:
+                client_id = query_params.get("client_id")
+            except:
+                client_id = event["requestContext"]["identity"]["sourceIp"]
+
+            return get_pastes_handler(
+                api_handler=api_handler,
+                client_id=hash_value(client_id),
+            )
 
         if "/api" in path:
             return get_handler(context=context, event=event, db=db)
