@@ -1,4 +1,4 @@
-import json
+import json, html
 from api_handler import ApiHandler
 from model import PasteDataAware
 
@@ -10,6 +10,7 @@ def get_handler(paste: PasteDataAware, is_web_browser: bool = False):
         return {"statusCode": 404}
 
     if is_web_browser:
+        escaped_content = html.escape(content)
         response_html = """
             <!DOCTYPE html>
             <html>
@@ -22,7 +23,7 @@ def get_handler(paste: PasteDataAware, is_web_browser: bool = False):
                 </body>
             </html>
             """.format(
-            content
+            escaped_content
         )
         return {
             "statusCode": 200,
