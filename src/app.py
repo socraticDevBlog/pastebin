@@ -4,7 +4,12 @@ import logging
 from model import PasteDataAware
 from api_handler import ApiHandler
 from dynamodb import DB
-from lambda_handlers import get_pastes_handler
+from lambda_handlers import (
+    get_pastes_handler,
+    get_handler,
+    options_handler,
+    post_handler,
+)
 
 logger = logging.getLogger()
 logger.setLevel("INFO")
@@ -35,113 +40,6 @@ def _dynamodb_endpoint_by_os(os: str):
         return "http://localhost:8000"
 
     return "http://host.docker.internal:8000"
-
-
-def get_handler(event, context, db: DB, is_web_browser: bool = False):
-    try:
-        id = event["queryStringParameters"]["id"]
-        paste = PasteDataAware(db=db, id=id)
-        content = paste.read()
-    except:
-        logger.error(f"GET-failed to retrieve requested paste-id {id}")
-        return {"statusCode": 404}
-
-    if is_web_browser:
-        response_html = """
-            <!DOCTYPE html>
-            <html>
-                <head>
-                    <title>Saved Content</title>
-                    <meta charset="UTF-8">
-                </head>
-                <body>
-                    <pre>{}</pre>
-                </body>
-            </html>
-            """.format(
-            content
-        )
-        return {
-            "statusCode": 200,
-            "isBase64Encoded": paste.is_base64_encoded(content=content),
-            "headers": {
-                "Content-Type": "text/html; charset=utf-8",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
-                "Access-Control-Allow-Headers": "Content-Type",
-            },
-            "body": response_html,
-        }
-
-    return {
-        "statusCode": 200,
-        "isBase64Encoded": False,
-        "headers": {
-            "content-type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
-            "Access-Control-Allow-Headers": "Content-Type",
-        },
-        "body": json.dumps(content),
-    }
-
-
-def post_handler(event, context, db: DB):
-    try:
-        # Extract the IP address from the event
-        client_ip = event["requestContext"]["identity"]["sourceIp"]
-        logger.info(f"POST-client IP address: {client_ip}")
-    except:
-        logger.warn(
-            "POST- client IP address not available at event['requestContext']['identity']['sourceIp']"
-        )
-
-    try:
-        content = json.loads(event["body"], strict=False)["content"]
-    except:
-        logger.warning(f'POST- unable to load content from event["body"])["content"]')
-        content = event["content"]
-
-    client_id = ""
-    try:
-        client_id = json.loads(event["body"], strict=False)["client_id"]
-    except:
-        client_id = client_ip
-
-    paste = PasteDataAware(
-        content=content, db=db, client_identifier=hash_value(client_id)
-    )
-
-    try:
-        id = paste.insert()
-    except Exception as e:
-        return {"statusCode": 500, "body": e.args[0]}
-
-    return {
-        "statusCode": 201,
-        "isBase64Encoded": False,
-        "headers": {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
-            "Access-Control-Allow-Headers": "Content-Type",
-        },
-        "body": json.dumps({"id": id}),
-    }
-
-
-def options_handler(event, context):
-    return {
-        "statusCode": 200,
-        "isBase64Encoded": False,
-        "headers": {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "POST,GET,OPTIONS,DELETE",
-            "Access-Control-Allow-Headers": "Content-Type",
-        },
-        "body": json.dumps({"message": "probably checking your OPTIONS"}),
-    }
 
 
 def lambda_handler(event, context):
@@ -183,18 +81,44 @@ def lambda_handler(event, context):
                 client_id=hash_value(client_id),
             )
 
+        id = event["queryStringParameters"]["id"]
+        paste = PasteDataAware(db=db, id=id)
+
         if "/api" in path:
-            return get_handler(context=context, event=event, db=db)
+            return get_handler(paste=paste)
 
         try:
             user_agent = event.get("headers", {}).get("User-Agent", "")
             is_web_browser = "Mozilla" in user_agent or "AppleWebKit" in user_agent
-            return get_handler(
-                context=context, event=event, db=db, is_web_browser=is_web_browser
-            )
+            return get_handler(paste=paste, is_web_browser=is_web_browser)
         except Exception as e:
             return get_handler(context=context, event=event, db=db)
     elif method == "POST":
-        return post_handler(context=context, event=event, db=db)
+        try:
+            client_ip = event["requestContext"]["identity"]["sourceIp"]
+            logger.info(f"POST-client IP address: {client_ip}")
+        except:
+            logger.warn(
+                "POST- client IP address not available at event['requestContext']['identity']['sourceIp']"
+            )
+
+        try:
+            content = json.loads(event["body"], strict=False)["content"]
+        except:
+            logger.warning(
+                f'POST- unable to load content from event["body"])["content"]'
+            )
+            content = event["content"]
+
+        client_id = ""
+        try:
+            client_id = json.loads(event["body"], strict=False)["client_id"]
+        except:
+            client_id = client_ip
+
+        paste = PasteDataAware(
+            content=content, db=db, client_identifier=hash_value(client_id)
+        )
+        return post_handler(paste=paste)
     else:
         return options_handler(context=context, event=event)
