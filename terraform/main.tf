@@ -41,6 +41,10 @@ resource "aws_dynamodb_table" "paste" {
     name = "id"
     type = "S"
   }
+  ttl {
+    attribute_name = "ttl"
+    enabled        = true
+  }
 }
 
 # #========================================================================
