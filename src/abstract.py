@@ -55,6 +55,8 @@ class Paste:
         if client_identifier is not None:
             self._metadata[KEY_CLIENT_ID] = client_identifier
 
+        self._ttl_timestamp = int(time.time()) + 3600  # one hour
+
     def dict(self) -> Dict:
 
         return {
@@ -64,6 +66,7 @@ class Paste:
             "encoding": DEFAULT_ENCODING,
             "created_time_epoch": self._unix_timestamp,
             "metadata": self._metadata,
+            "ttl": self._ttl_timestamp,
         }
 
     def get_client_identifier(self):
