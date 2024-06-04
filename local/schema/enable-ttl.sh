@@ -21,13 +21,14 @@
 #==============================================================================
 
 tableName="paste"
+endpointUrl="http://localhost:8000"
 
 # shellcheck disable=SC2148
 aws dynamodb update-time-to-live \
-    --endpoint-url http://localhost:8000 \
+    --endpoint-url ${endpointUrl} \
     --table-name "${tableName}" \
     --time-to-live-specification "Enabled=true, AttributeName=ttl"
 
 aws dynamodb describe-time-to-live \
-    --table-name "${tableName}" \
-    --endpoint-url http://localhost:8000
+    --endpoint-url ${endpointUrl} \
+    --table-name "${tableName}"
