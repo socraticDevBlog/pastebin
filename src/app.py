@@ -116,8 +116,15 @@ def lambda_handler(event, context):
         except:
             client_id = client_ip
 
+        paste_ttl = int(
+            os.getenv("PASTE_TTL", 86400)
+        )  # paste gets deleted after n seconds
+
         paste = PasteDataAware(
-            content=content, db=db, client_identifier=hash_value(client_id)
+            content=content,
+            db=db,
+            client_identifier=hash_value(client_id),
+            ttl=paste_ttl,
         )
         return post_handler(paste=paste)
     else:

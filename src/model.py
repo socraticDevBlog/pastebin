@@ -13,12 +13,15 @@ class PasteDataAware(Paste):
     def __init__(
         self,
         db: DB,
+        ttl: int = None,
         content: Union[str, bytes] = None,
         id: str = None,
         client_identifier: str = None,
     ):
         self._db = db
-        super().__init__(id=id, content=content, client_identifier=client_identifier)
+        super().__init__(
+            id=id, content=content, client_identifier=client_identifier, ttl=ttl
+        )
 
     def insert(self) -> str:
         """
