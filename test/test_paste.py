@@ -9,7 +9,7 @@ def test_required_fields_to_object():
     are populated
 
     """
-    required_keys = ["id", "content", "created_time_epoch"]
+    required_keys = ["id", "content", "created_time_epoch", "ttl"]
     valid_paste = Paste(content="test")
     to_object_dict = valid_paste.dict()
     for k in required_keys:
