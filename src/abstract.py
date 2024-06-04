@@ -28,6 +28,7 @@ class Paste:
 
     def __init__(
         self,
+        ttl: int,
         content: str = None,
         id: str = None,
         timestamp: int = None,
@@ -55,7 +56,8 @@ class Paste:
         if client_identifier is not None:
             self._metadata[KEY_CLIENT_ID] = client_identifier
 
-        self._ttl_timestamp = int(time.time()) + 3600  # one hour
+        if ttl is not None:
+            self._ttl_timestamp = int(time.time()) + ttl
 
     def dict(self) -> Dict:
 
