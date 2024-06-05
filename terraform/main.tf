@@ -122,7 +122,7 @@ resource "aws_lambda_function" "apigw_lambda_ddb" {
   environment {
     variables = {
       DDB_TABLE     = var.dynamodb_table,
-      PASTE_TTL     = 3600, // one hour then gets deleted from db
+      PASTE_TTL     = 259200, # a paste self-deletes 3 days after insert
       AWS_SAM_LOCAL = "",
       DEVENV        = "",
       BASE_URL      = var.api_base_url
