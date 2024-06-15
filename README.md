@@ -226,3 +226,5 @@ we're gonna upgrade dependencies to the latest version everytime we deploy
 
 It might break our app after a deployment, but it's a price we're ready to pay
 to have the app evolve with time with the latest dependencies
+
+modif bidon
