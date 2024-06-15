@@ -1,0 +1,6 @@
+# Ignore everything by default
+*
+
+# Negate ignore for zip files used in Lambda functions and layers
+!lambda.zip
+!layer.zip

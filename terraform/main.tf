@@ -84,7 +84,7 @@ data "archive_file" "layer_zip" {
 resource "aws_lambda_layer_version" "dependencies_layer" {
   filename            = var.zipped_files["layer"]
   layer_name          = "python-layer"
-  source_code_hash    = base64sha256(data.archive_file.layer_zip.output_path)
+  source_code_hash    = filebase64sha256(data.archive_file.layer_zip.output_path)
   compatible_runtimes = [var.python_runtime]
 }
 
@@ -115,7 +115,7 @@ resource "aws_lambda_function" "apigw_lambda_ddb" {
   runtime = var.python_runtime
   handler = "app.lambda_handler"
 
-  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+  source_code_hash = filebase64sha256(data.archive_file.lambda_zip.output_path)
 
   role = aws_iam_role.lambda_exec.arn
 
@@ -128,7 +128,12 @@ resource "aws_lambda_function" "apigw_lambda_ddb" {
       BASE_URL      = var.api_base_url
     }
   }
-  layers     = [aws_lambda_layer_version.dependencies_layer.arn]
+  layers = [aws_lambda_layer_version.dependencies_layer.arn]
+  lifecycle {
+    ignore_changes = [
+      layers,
+    ]
+  }
   depends_on = [aws_cloudwatch_log_group.lambda_logs]
 }
 

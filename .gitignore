@@ -164,6 +164,7 @@ src.zip
 
 terraform-provider*
 .terraform*
+!.terraformignore
 *.zip
 
 creds
