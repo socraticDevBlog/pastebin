@@ -128,7 +128,12 @@ resource "aws_lambda_function" "apigw_lambda_ddb" {
       BASE_URL      = var.api_base_url
     }
   }
-  layers     = [aws_lambda_layer_version.dependencies_layer.arn]
+  layers = [aws_lambda_layer_version.dependencies_layer.arn]
+  lifecycle {
+    ignore_changes = [
+      layers,
+    ]
+  }
   depends_on = [aws_cloudwatch_log_group.lambda_logs]
 }
 
