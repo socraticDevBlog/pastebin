@@ -4,7 +4,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    continue-on-error: true # temporary should be fixed (2024-06-03)
+    continue-on-error: false
     steps:
       - uses: actions/checkout@v2
 
