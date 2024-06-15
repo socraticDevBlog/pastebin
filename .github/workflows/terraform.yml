@@ -28,11 +28,16 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: Install Lambda (python) dependencies
+      - name: Install Lambda (Python) dependencies
         run: |
           pip install --user pipenv
-          export PIPENV_VENV_IN_PROJECT=1 &&  mkdir .venv && touch Pipfile
-          pipenv install --deploy
+          if [ ! -d .venv ]; then
+            export PIPENV_VENV_IN_PROJECT=1
+            pipenv install --deploy
+          else
+            export PIPENV_VENV_IN_PROJECT=1
+            pipenv sync
+          fi
 
       - name: Configure AWS credentials from AWS account
         uses: aws-actions/configure-aws-credentials@v1
