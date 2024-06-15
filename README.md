@@ -2,6 +2,7 @@
 [![terraform](https://github.com/socraticDevBlog/pastebin/actions/workflows/terraform.yml/badge.svg?branch=main)](https://github.com/socraticDevBlog/pastebin/actions/workflows/terraform.yml)
 
 # poor man cloud-native pastebin3
+
 ![official project's image](pastebin.png "socraticDevBlog cloud-native pastebin")
 
 this project is about using AWS Free tier resources to host yourown pastebin
@@ -215,3 +216,13 @@ curl -i  -X POST -H "Content-Type: application/json" -d '{"content":"one two tre
 - Docker
 - DynamoDB local
 - SAM (Lambda), awscli
+
+### ADR
+
+#### python dependencies are NOT pinned
+
+In order to avoid having to upgrade project's dependencies when it's too late,
+we're gonna upgrade dependencies to the latest version everytime we deploy
+
+It might break our app after a deployment, but it's a price we're ready to pay
+to have the app evolve with time with the latest dependencies
