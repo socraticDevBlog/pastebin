@@ -44,12 +44,13 @@ variable "virtualenv_id" {
 
 variable "cors_allow_origins" {
   type    = set(string)
-  default = ["*"]
+  default = ["https://dailybuild.org"]
 }
 
 variable "notification_email" {
   type      = string
   sensitive = true
+  default   = ""
 }
 
 variable "zipped_files" {
@@ -63,4 +64,5 @@ variable "zipped_files" {
 variable "api_base_url" {
   type        = string
   description = "base url to the API"
+  default     = "https://paste.socratic.dev"
 }
