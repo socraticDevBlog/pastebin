@@ -86,6 +86,12 @@ resource "aws_lambda_layer_version" "dependencies_layer" {
   layer_name          = "python-layer"
   source_code_hash    = filebase64sha256(data.archive_file.layer_zip.output_path)
   compatible_runtimes = [var.python_runtime]
+
+  lifecycle {
+    ignore_changes = [
+      source_code_hash,
+    ]
+  }
 }
 
 data "archive_file" "lambda_zip" {
