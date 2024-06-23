@@ -44,7 +44,7 @@ variable "virtualenv_id" {
 
 variable "cors_allow_origins" {
   type    = set(string)
-  default = ["https://dailybuild.org"]
+  default = ["https://dailybuild.org", "https://socraticdevblog.github.io"]
 }
 
 variable "notification_email" {
