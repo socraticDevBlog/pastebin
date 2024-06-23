@@ -14,6 +14,46 @@ tags:
   - name: "pastes"
     description: "some strings a user wants to save for later"
 paths:
+  /paste/api/pastes:
+    get:
+      summary: Retrieve recent pastes' URL
+      description: |
+        open endpoint used to retrieve recent pastes (full URL) based on client's IP address
+        or a provided client id
+      operationId: "retrieve-recent-pastes"
+      tags:
+        - "pastes"
+      parameters:
+        - in: query
+          name: client_id
+          required: false
+          schema:
+            type: string
+          example: "workspace1"
+          description: |
+            self-picked string picked by the user to identify
+            themselves to Pastebin's
+      responses:
+        "200":
+          description: |
+            will always return a http 200 response. worse case it's
+            gonna be an empty array
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+        "500":
+          description: Internal Server Error. Something went wrong on the server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal Server Error"
   /paste/api:
     get:
       summary: Retrieve a paste by ID
