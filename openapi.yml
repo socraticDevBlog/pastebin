@@ -44,6 +44,16 @@ paths:
                 type: array
                 items:
                   type: string
+        "500":
+          description: Internal Server Error. Something went wrong on the server.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal Server Error"
   /paste/api:
     get:
       summary: Retrieve a paste by ID
