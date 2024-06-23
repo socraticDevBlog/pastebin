@@ -7,7 +7,7 @@ Globals:
       Variables:
         DEVENV: windows # macos | linux
         BASE_URL: "http://localhost:3000"
-        PASTE_TTL: 60 # sixty seconds then it gets deleted
+        PASTE_TTL: 86400 # keep local Paste for 24hours
 Resources:
   ApiGatewayApi:
     Type: AWS::Serverless::Api
