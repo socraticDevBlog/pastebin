@@ -63,7 +63,7 @@ class Paste:
         return {
             "id": self.id,
             "content": self._base_64_content,
-            "isBase64Encoded": False,
+            "isBase64Encoded": self.is_base64_encoded(content=self._base_64_content),
             "encoding": DEFAULT_ENCODING,
             "created_time_epoch": self._unix_timestamp,
             "metadata": self._metadata,
