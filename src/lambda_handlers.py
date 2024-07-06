@@ -39,7 +39,7 @@ def get_handler(paste: PasteDataAware, is_web_browser: bool = False):
 
     return {
         "statusCode": 200,
-        "isBase64Encoded": False,
+        "isBase64Encoded": paste.is_base64_encoded(content=content),
         "headers": {
             "content-type": "application/json",
             "Access-Control-Allow-Origin": "*",
