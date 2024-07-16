@@ -44,7 +44,7 @@ variable "virtualenv_id" {
 
 variable "cors_allow_origins" {
   type    = set(string)
-  default = ["https://dailybuild.org", "https://socraticdevblog.github.io"]
+  default = ["https://dailybuild.org", "https://socraticdevblog.github.io", "https://deploy-preview-22--flourishing-dodol-f6712e.netlify.app"]
 }
 
 variable "notification_email" {
