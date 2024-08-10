@@ -13,10 +13,12 @@ class ApiHandler:
         self._db = db
         self._base_url = base_url
 
-    def latest_pastes_urls(self, client_identifier: str = None) -> List[str]:
+    def latest_pastes_urls(
+        self, limit: int = 5, client_identifier: str = None
+    ) -> List[str]:
         try:
             pastes_id = self._db.paste_ids_by_client_identifier(
-                client_identifier=client_identifier
+                client_identifier=client_identifier, count=limit
             )
         except:
             raise ApiHandlerException()
