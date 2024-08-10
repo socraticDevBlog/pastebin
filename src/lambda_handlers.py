@@ -84,7 +84,7 @@ def options_handler(event, context):
 
 
 def get_pastes_handler(api_handler: ApiHandler, client_id: str):
-    paste_urls = api_handler.latest_pastes_urls(client_identifier=client_id)
+    paste_urls = api_handler.latest_pastes_urls(limit=10, client_identifier=client_id)
 
     return {
         "statusCode": 200,
