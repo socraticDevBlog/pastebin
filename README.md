@@ -73,6 +73,8 @@ docker compose down -v
 docker compose up
 ```
 
+ℹ️ keep this terminal running in order to keep local DynamoDB Docker container running
+
 ### 3. Run Lambda locally
 
 Using SAM (Serverless Application Model) CLI, you can easily execute the lambda
@@ -87,6 +89,8 @@ Stubbed lambda _event_ input arguments are located at `local/events/`. There is
 one file per http verb.
 
 #### simulate a POST request locally
+
+in a new terminal (the first one is busy running DynamoDB container)
 
 ```bash
 pipenv run sam build && pipenv run sam local invoke -e local/events/post.json
@@ -105,7 +109,9 @@ pipenv run sam build && pipenv run sam local invoke -e local/events/post.json
 
 ⚠️ make sure you have successfully inserted at least one(1) Paste in your local
 database. Make sure `id` value in `local/events/get.json` file reflects this
-inserted Paste's Id.
+inserted Paste's Id. 
+
+for a simple API call, target `local/events/get-api.json` file
 
 ```bash
 pipenv run sam build && pipenv run sam local invoke -e local/events/get.json
@@ -136,6 +142,14 @@ pipenv run sam build && pipenv run sam local start-api
 # 2023-08-09 17:19:04 Press CTRL+C to quit
 ```
 
+##### invoke local api /paste GET endpoint
+
+```bash
+id=<from previously posted paste>
+
+curl http://127.0.0.1:3000/paste?id=$id
+```
+
 ## Running Tests
 
 To run tests, run the following command
@@ -159,7 +173,7 @@ to understand how we compress project's dependencies installed on local machine
 by `pipenv`). There might be simpler ways to install Python dependencies to aws
 lambda, but as of now(2023-12-23) we don't know better.
 
-Make sure to package your dependancies in a zip file to add it as a layer to
+Make sure to package your dependencies in a zip file to add it as a layer to
 our lambda -> https://spak.no/blog/article/63f47f130faeadeeeb968ae9
 
 ## use your pastebin on the public internet
