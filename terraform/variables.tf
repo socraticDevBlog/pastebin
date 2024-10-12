@@ -17,7 +17,7 @@ variable "region" {
 
 variable "python_runtime" {
   type        = string
-  default     = "python3.9"
+  default     = "python3.10"
   description = "runtime on which lambda python code will run"
 }
 
