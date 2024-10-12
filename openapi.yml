@@ -9,7 +9,6 @@ info:
     email: thesocraticdev@gmail.com
 servers:
   - url: "https://paste.socratic.dev"
-  - url: "https://exj5m66tib.execute-api.ca-central-1.amazonaws.com"
 tags:
   - name: "pastes"
     description: "some strings a user wants to save for later"
