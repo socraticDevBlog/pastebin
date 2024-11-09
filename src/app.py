@@ -82,7 +82,7 @@ def lambda_handler(event, context):
             )
 
         id = event["queryStringParameters"]["id"]
-        paste = PasteDataAware(db=db, id=id)
+        paste = PasteDataAware(db=db, id=id, ttl=int(os.getenv("PASTE_TTL", 86400)))
 
         if "/api" in path:
             return get_handler(paste=paste)
