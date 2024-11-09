@@ -45,4 +45,6 @@ class PasteDataAware(Paste):
         """
         self._base_64_content = self._db.get_item(self.id)["Item"]["content"]
 
+        self._db.update_ttl(item_id=self.id, new_ttl=self._ttl_timestamp)
+
         return self._base64_decode_content()

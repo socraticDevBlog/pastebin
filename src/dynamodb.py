@@ -34,6 +34,18 @@ class DB:
                 table_name
             )
 
+    def update_ttl(self, item_id: str, new_ttl: int) -> None:
+        try:
+            self._table.update_item(
+                Key={"id": item_id},
+                UpdateExpression="SET #ttl = :new_ttl",
+                ExpressionAttributeNames={"#ttl": "ttl"},
+                ExpressionAttributeValues={":new_ttl": new_ttl},
+                ReturnValues="UPDATED_NEW",
+            )
+        except Exception as e:
+            raise DB_Exception(f"Updating ttl to table failed: {e}")
+
     def insert(self, dict: Dict) -> str:
         """
         insert
