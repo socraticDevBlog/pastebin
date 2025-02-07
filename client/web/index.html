@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="environment" content="local">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pastebin</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        text-align: center;
+      }
+      textarea {
+        width: 80%;
+        height: 200px;
+        margin-bottom: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Pastebin</h1>
+    <textarea
+      id="pasteContent"
+      placeholder="Paste your text here..."
+    ></textarea>
+    <br />
+    <button onclick="submitText()">Submit</button>
+    <div id="responseContainer"></div>
+    <h2>latest pastes</h2>
+    <div id="latestPasteUrls"></div>
+    <script src="script.js"></script>
+  </body>
+</html>
