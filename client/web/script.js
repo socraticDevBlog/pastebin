@@ -118,6 +118,39 @@ async function displayPasteUrls() {
   }
 }
 
+async function paste(input) {
+  const text = await navigator.clipboard.readText();
+  input.value = text;
+}
+
+function toggleMode() {
+  document.body.classList.toggle("dark-mode");
+  const isDark = document.body.classList.contains("dark-mode");
+
+  // Save user preference
+  localStorage.setItem("darkMode", isDark ? "enabled" : "disabled");
+
+  // Change button icon
+  document.getElementById("toggleModeButton").innerHTML = isDark ? "☀️" : "🌙";
+}
+
+document
+  .getElementById("pasteContent")
+  .addEventListener("keydown", function (event) {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault(); // Prevents adding a new line
+      submitText(); // Triggers submit
+    }
+  });
+
 window.onload = function () {
   displayPasteUrls();
+  const darkModeSetting = localStorage.getItem("darkMode");
+
+  if (darkModeSetting !== "disabled") {
+    document.body.classList.add("dark-mode");
+    document.getElementById("toggleModeButton").innerHTML = "☀️";
+  } else {
+    document.getElementById("toggleModeButton").innerHTML = "🌙";
+  }
 };

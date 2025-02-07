@@ -1,28 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta name="environment" content="local">
+    <meta name="environment" content="local" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pastebin</title>
     <style>
+      :root {
+        --bg-color: white;
+        --text-color: black;
+        --button-bg: #007bff;
+        --button-hover: #0056b3;
+      }
+
+      body.dark-mode {
+        --bg-color: #121212;
+        --text-color: #ffffff;
+        --button-bg: #ff9800;
+        --button-hover: #e68900;
+      }
+
       body {
         font-family: Arial, sans-serif;
         margin: 20px;
         text-align: center;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        transition: background 0.3s, color 0.3s;
       }
+
       textarea {
         width: 80%;
         height: 200px;
         margin-bottom: 10px;
+        background: var(--bg-color);
+        color: var(--text-color);
+        border: 1px solid var(--text-color);
+        padding: 10px;
+        font-size: 16px;
+        transition: background 0.3s, color 0.3s;
+      }
+
+      .paste-button {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        padding: 5px 10px;
+        font-size: 14px;
+        background-color: var(--button-bg);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out, background 0.3s;
+      }
+
+      .container:hover .paste-button {
+        opacity: 1;
+      }
+
+      .paste-button:hover {
+        background-color: var(--button-hover);
+      }
+
+      /* Toggle Mode Button (Top-Right) */
+      #toggleModeButton {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 8px 15px;
+        font-size: 14px;
+        background-color: var(--button-bg);
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      #toggleModeButton:hover {
+        background-color: var(--button-hover);
       }
     </style>
   </head>
   <body>
+    <!-- Toggle Mode Button (Top-Right) with the same id as in the initial code -->
+    <button id="toggleModeButton" onclick="toggleMode()">☀️</button>
+
     <h1>Pastebin</h1>
     <textarea
       id="pasteContent"
       placeholder="Paste your text here..."
+      onclick="paste(this)"
     ></textarea>
     <br />
     <button onclick="submitText()">Submit</button>
