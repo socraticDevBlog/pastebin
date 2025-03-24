@@ -247,8 +247,8 @@ resource "aws_apigatewayv2_stage" "default" {
 
     content {
       route_key              = route_settings.value.route_key
-      throttling_burst_limit = 5
-      throttling_rate_limit  = 2
+      throttling_burst_limit = 1
+      throttling_rate_limit  = 1
     }
   }
 
@@ -257,7 +257,7 @@ resource "aws_apigatewayv2_stage" "default" {
 
     content {
       route_key              = route_settings.value.route_key
-      throttling_burst_limit = 2
+      throttling_burst_limit = 1
       throttling_rate_limit  = 1
     }
   }
@@ -326,8 +326,44 @@ resource "aws_sns_topic" "budget_notification" {
   name = "BudgetNotificationTopic"
 }
 
-resource "aws_sns_topic_subscription" "email_subscription" {
-  topic_arn = aws_sns_topic.budget_notification.arn
+locals {
+  email_alarm_topics = {
+    budget_notification       = aws_sns_topic.budget_notification.arn
+    api_requests_notification = aws_sns_topic.api_requests_notification.arn
+  }
+}
+
+moved {
+  from = aws_sns_topic_subscription.email_subscription
+  to   = aws_sns_topic_subscription.email_alerts["budget_notification"]
+}
+
+resource "aws_sns_topic_subscription" "email_alerts" {
+  for_each  = local.email_alarm_topics
+  topic_arn = each.value
   protocol  = "email"
   endpoint  = var.notification_email
+}
+
+resource "aws_cloudwatch_metric_alarm" "api_requests_alarm" {
+  alarm_name          = "APIGatewayRequestAlarm"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 1
+  metric_name         = "Count"
+  namespace           = "AWS/ApiGateway"
+  period              = 1200 # 20 minutes (adjust as needed)
+  statistic           = "Sum"
+  threshold           = 1000 # Trigger alarm when requests exceed 1000
+
+  dimensions = {
+    ApiId = aws_apigatewayv2_api.http_lambda.id
+  }
+
+  alarm_description = "Alarm for API Gateway requests exceeding 10,000 in the evaluation period."
+
+  alarm_actions = [aws_sns_topic.api_requests_notification.arn]
+}
+
+resource "aws_sns_topic" "api_requests_notification" {
+  name = "APIRequestsNotificationTopic"
 }
