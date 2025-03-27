@@ -1,6 +1,8 @@
 name: openapiv3validation
 on:
-  pull_request:
+  push:
+    branches:
+      - "*"
 jobs:
   build:
     runs-on: ubuntu-latest
