@@ -1,4 +1,4 @@
-[![PyTest](https://github.com/socraticDevBlog/pastebin/actions/workflows/pytest.yml/badge.svg)](https://github.com/socraticDevBlog/pastebin/actions/workflows/pytest.yml)[![openapiv3](https://github.com/socraticDevBlog/pastebin/actions/workflows/lint.yml/badge.svg)](https://github.com/socraticDevBlog/pastebin/actions/workflows/lint.yml)
+[![PyTest](https://github.com/socraticDevBlog/pastebin/actions/workflows/pytest.yml/badge.svg?branch=main)](https://github.com/socraticDevBlog/pastebin/actions/workflows/pytest.yml)[![openapiv3](https://github.com/socraticDevBlog/pastebin/actions/workflows/lint.yml/badge.svg?branch=main)](https://github.com/socraticDevBlog/pastebin/actions/workflows/lint.yml)
 [![terraform](https://github.com/socraticDevBlog/pastebin/actions/workflows/terraform.yml/badge.svg?branch=main)](https://github.com/socraticDevBlog/pastebin/actions/workflows/terraform.yml)
 
 # poor man cloud-native pastebin3

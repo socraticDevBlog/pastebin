@@ -1,7 +1,9 @@
 # .github/workflows/app.yaml
 name: PyTest
 on:
-  pull_request:
+  push:
+    branches:
+      - "*"
 jobs:
   test:
     runs-on: ubuntu-latest
