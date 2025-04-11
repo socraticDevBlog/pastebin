@@ -5,3 +5,6 @@ name = "pypi"
 
 [packages]
 fastapi = {extras = ["standard"], version = "*"}
+
+[dev-packages]
+black = "*"
