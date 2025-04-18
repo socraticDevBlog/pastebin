@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 fastapi = {extras = ["standard"], version = "*"}
+exceptiongroup = "*"
+tomli = "*"
 
 [dev-packages]
 black = "*"
