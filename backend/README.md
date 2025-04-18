@@ -20,9 +20,6 @@ avoid trouble by setting up these two environment variable before using `pipenv`
 # tell pipenv to use the /backend/Pipfile
 export PIPENV_PIPFILE=$(pwd)/Pipfile
 
-# tell pipenv to create and use the .venv directory for virtual environment
-# in this directory here
-export PIPENV_VENV_IN_PROJECT=1
 ```
 
 ## run api in dev mode
@@ -34,15 +31,25 @@ pipenv run fastapi dev
 ## Docker
 
 build the image locally
+
 ```
 docker build -t pastebin-backend .
 ```
 
 run the container
+
 ```
 docker run -p 8000:8000 pastebin-backend
 ```
 
 FastAPI app is available on: [http://localhost:8000](http://localhost:8000)
 
+## API - locally
 
+use built-in swagger
+
+```
+pipenv run uvicorn app.main:app --reload
+```
+
+<http://127.0.0.1:8000/docs>
