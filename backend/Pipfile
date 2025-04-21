@@ -4,9 +4,12 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-fastapi = {extras = ["standard"], version = "*"}
 exceptiongroup = "*"
 tomli = "*"
+asyncpg = "*"
+python-dotenv = "*"
+fastapi = "*"
 
 [dev-packages]
 black = "*"
+pytest = "*"
