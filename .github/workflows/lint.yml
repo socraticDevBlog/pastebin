@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - "*"
+    paths-ignore:
+      - "backend/**"
 jobs:
   build:
     runs-on: ubuntu-latest
