@@ -1,22 +1,25 @@
 import time
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from app.utils import hash_value
 
 
-class PasteModel(BaseModel):
+class PasteInputModel(BaseModel):
     """
-    Paste model for creating and retrieving pastes
-    with FastAPI.
-
-    Attributes:
-        content (str): Content of the paste.
-        workspace (Optional[str]): Optional workspace identifier.
+    Input model for creating a new paste.
     """
 
     content: str
-    workspace: Optional[str]
+    workspace: Optional[str] = ""
+
+
+class PasteModel(PasteInputModel):
+    """
+    Model for retrieving pastes, including the paste_id.
+    """
+
+    paste_id: Optional[str]
 
 
 class PasteDataAware:
@@ -25,13 +28,13 @@ class PasteDataAware:
     with actual database
 
     Attributes:
-        id (str): Unique identifier for the paste.
+        paste_id (str): Unique paste_identifier for the paste.
         content (str): Content of the paste.
-        client_id (str): Identifier for the client creating the paste.
+        client_id (str): paste_identifier for the client creating the paste.
         created_at (int): Timestamp of when the paste was created.
     """
 
-    id: str
+    paste_id: str
     content: str
     client_id: str
     created_at: int
@@ -41,9 +44,9 @@ class PasteDataAware:
         content: str,
         client_id: str,
         created_at: Optional[int] = None,
-        id: str = None,
+        paste_id: str = None,
     ):
-        self.id = hash_value(value=content) if id is None else id
+        self.paste_id = hash_value(value=content) if paste_id is None else paste_id
         self.content = content
         self.client_id = client_id
         self.created_at = int(time.time()) if created_at is None else created_at
