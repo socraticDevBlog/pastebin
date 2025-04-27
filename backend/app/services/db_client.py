@@ -97,7 +97,7 @@ class DBClient:
             RETURNING id, paste_id;
             """
             result = await conn.fetchrow(
-                insert_query, paste.content, paste.client_id, paste.created_at
+                insert_query, paste.encoded_content, paste.client_id, paste.created_at
             )
 
             return result["paste_id"]

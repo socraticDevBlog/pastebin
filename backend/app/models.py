@@ -2,7 +2,8 @@ import time
 from typing import Optional
 
 from pydantic import BaseModel, Field
-from app.utils import hash_value
+
+from app.utils import from_base64, is_base64, to_base64
 
 
 class PasteInputModel(BaseModel):
@@ -46,7 +47,31 @@ class PasteDataAware:
         created_at: Optional[int] = None,
         paste_id: str = None,
     ):
-        self.paste_id = hash_value(value=content) if paste_id is None else paste_id
-        self.content = content
+        self.paste_id = paste_id
+        self._content = content if is_base64(content) else to_base64(content)
         self.client_id = client_id
         self.created_at = int(time.time()) if created_at is None else created_at
+
+    @property
+    def encoded_content(self) -> str:
+        """
+        Get the decoded content of the paste.
+
+        Returns:
+            str: The decoded content of the paste.
+        """
+        return self._content if is_base64(self._content) else to_base64(self._content)
+
+    @property
+    def plain_content(self) -> str:
+        """
+        Get the plain content of the paste.
+
+        Returns:
+            str: The plain content of the paste.
+        """
+        return (
+            self._content
+            if not is_base64(self._content)
+            else from_base64(self._content)
+        )
