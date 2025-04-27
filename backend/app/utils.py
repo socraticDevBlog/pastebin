@@ -1,4 +1,3 @@
-DEFAULT_ENCODING = "utf-8"
 import base64
 
 DEFAULT_ENCODING = "utf-8"
@@ -15,7 +14,6 @@ def is_base64(s: str, encoding: str = DEFAULT_ENCODING) -> bool:
         bool: True if the string is valid Base64, False otherwise.
     """
     try:
-        # Decode and re-encode to verify Base64 validity
         return base64.b64encode(base64.b64decode(s)).decode(encoding=encoding) == s
     except Exception:
         return False
