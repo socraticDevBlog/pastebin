@@ -1,8 +1,9 @@
-import base64
 import time
 from typing import Optional
 
 from pydantic import BaseModel, Field
+
+from app.utils import from_base64, is_base64, to_base64
 
 
 class PasteInputModel(BaseModel):
@@ -38,10 +39,6 @@ class PasteDataAware:
     content: str
     client_id: str
     created_at: int
-    content_encoding: str = Field(
-        default="utf-8",
-        description="Encoding used for the content. Default is 'utf-8'.",
-    )
 
     def __init__(
         self,
@@ -49,48 +46,32 @@ class PasteDataAware:
         client_id: str,
         created_at: Optional[int] = None,
         paste_id: str = None,
-        content_encoding: str = "utf-8",
     ):
         self.paste_id = paste_id
-        self._content = (
-            content
-            if self._is_base64(content)
-            else base64.b64encode(content.encode(content_encoding)).decode(
-                content_encoding
-            )
-        )
+        self._content = content if is_base64(content) else to_base64(content)
         self.client_id = client_id
         self.created_at = int(time.time()) if created_at is None else created_at
-        self.content_encoding = content_encoding
 
-    def _is_base64(self, s: str) -> bool:
+    @property
+    def encoded_content(self) -> str:
         """
-        Check if a string is valid Base64.
-
-        Args:
-            s (str): The string to check.
+        Get the decoded content of the paste.
 
         Returns:
-            bool: True if the string is valid Base64, False otherwise.
+            str: The decoded content of the paste.
         """
-        try:
-            # Decode and re-encode to verify Base64 validity
-            return base64.b64encode(base64.b64decode(s)).decode("utf-8") == s
-        except Exception:
-            return False
+        return self._content if is_base64(self._content) else to_base64(self._content)
 
-    def plain_content(self):
+    @property
+    def plain_content(self) -> str:
         """
-        Returns the content of the paste in plain text format.
+        Get the plain content of the paste.
 
+        Returns:
+            str: The plain content of the paste.
         """
-        return base64.b64decode(self._content.encode(self.content_encoding)).decode(
-            self.content_encoding
+        return (
+            self._content
+            if not is_base64(self._content)
+            else from_base64(self._content)
         )
-
-    def base64_content(self):
-        """
-        Returns the content of the paste in base64 format.
-
-        """
-        return self._content

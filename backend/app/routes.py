@@ -37,7 +37,7 @@ async def get_paste(id: str, request: Request, db_client=Depends(get_db_client))
     is_web_browser = "Mozilla" in user_agent or "AppleWebKit" in user_agent
 
     paste_model = PasteModel(
-        content=paste.plain_content(),
+        content=paste.plain_content,
         paste_id=paste.paste_id,
         workspace=paste.client_id,
     )
