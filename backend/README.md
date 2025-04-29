@@ -28,21 +28,38 @@ export PIPENV_PIPFILE=$(pwd)/Pipfile
 pipenv run fastapi dev
 ```
 
-## Docker
+## Docker compose
 
-build the image locally
+build the app image locally
 
 ```
 docker build -t pastebin-backend .
 ```
 
-run the container
+have a `.env` file at the root of the `/backend` directory and fill it out with
+these values
 
-```
-docker run -p 8000:8000 pastebin-backend
+```ini
+DB_USER=myuser
+DB_PASSWORD=mypassword
+DB_NAME=mydeb
+DB_SCHEMA=myschema
+DB_HOST=db # must match docker-compose file service name
 ```
 
-FastAPI app is available on: [http://localhost:8000](http://localhost:8000)
+run the app alongside a Postgresql database on your local machine
+
+```bash
+docker compose up --build
+```
+
+to reset your docker environment
+
+```bash
+docker compose down --volumes
+```
+
+FastAPI app swagger is available on: [http://localhost:8010/docs](http://localhost:8010/docs)
 
 ## API - locally
 
