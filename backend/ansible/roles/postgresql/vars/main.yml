@@ -1,7 +1,0 @@
-postgresql_version: "17"
-db_name: "devdb"
-db_user: "devuser"
-dev_db_password: "{{ db_password }}"
-postgresql_bin_path: "/usr/lib/postgresql/{{ postgresql_version }}/bin"
-postgresql_data_dir: "/var/lib/postgresql/{{ postgresql_version }}/main"
-ansible_ssh_pipelining: true

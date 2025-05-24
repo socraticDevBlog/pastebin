@@ -1,6 +1,0 @@
----
-- name: Set up Fastapi app
-  hosts: all
-  become: true
-  roles:
-    - role: fastapi_app

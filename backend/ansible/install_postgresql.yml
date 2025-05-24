@@ -1,8 +1,0 @@
----
-- name: Set up PostgreSQL Database
-  hosts: all
-  become: true
-  vars_files:
-    - db_password.yml
-  roles:
-    - role: postgresql
