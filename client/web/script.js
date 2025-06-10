@@ -118,11 +118,6 @@ async function displayPasteUrls() {
   }
 }
 
-async function paste(input) {
-  const text = await navigator.clipboard.readText();
-  input.value = text;
-}
-
 function toggleMode() {
   document.body.classList.toggle("dark-mode");
   const isDark = document.body.classList.contains("dark-mode");
@@ -133,15 +128,6 @@ function toggleMode() {
   // Change button icon
   document.getElementById("toggleModeButton").innerHTML = isDark ? "☀️" : "🌙";
 }
-
-document
-  .getElementById("pasteContent")
-  .addEventListener("keydown", function (event) {
-    if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault(); // Prevents adding a new line
-      submitText(); // Triggers submit
-    }
-  });
 
 window.onload = function () {
   displayPasteUrls();
