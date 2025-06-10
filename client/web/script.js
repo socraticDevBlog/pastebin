@@ -24,7 +24,6 @@ async function submitText() {
   let content;
   if (textData) {
     content = textData;
-    console.log(`content: {content}`);
   } else {
     alert("Please enter text to be saved");
     return;
@@ -139,4 +138,5 @@ window.onload = function () {
   } else {
     document.getElementById("toggleModeButton").innerHTML = "🌙";
   }
+  document.getElementById("pasteContent").focus();
 };
