@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - "*"
+    paths-ignore:
+      - 'client/web/**'
 jobs:
   test:
     runs-on: ubuntu-latest

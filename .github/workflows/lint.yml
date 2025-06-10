@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - "*"
+    paths-ignore:
+      - 'client/web/**'
 jobs:
   build:
     runs-on: ubuntu-latest
