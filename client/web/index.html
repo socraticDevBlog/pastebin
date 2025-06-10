@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta name="environment" content="local" />
+    <meta name="environment" content="production" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pastebin</title>
@@ -11,6 +11,9 @@
         --text-color: black;
         --button-bg: #007bff;
         --button-hover: #0056b3;
+        --submit-bg: #007bff; /* Blue color for Submit (default) */
+        --submit-hover: #0056b3; /* Darker blue for hover */
+        --font-size: 16px;
       }
 
       body.dark-mode {
@@ -18,6 +21,8 @@
         --text-color: #ffffff;
         --button-bg: #ff9800;
         --button-hover: #e68900;
+        --submit-bg: #ff9800; /* Dark mode submit color */
+        --submit-hover: #e68900;
       }
 
       body {
@@ -82,6 +87,28 @@
       #toggleModeButton:hover {
         background-color: var(--button-hover);
       }
+
+      /* Submit Button Styling */
+      button {
+        font-size: 18px;
+        padding: 12px 20px;
+        margin-top: 10px;
+        background-color: var(--submit-bg);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      }
+
+      button:hover {
+        background-color: var(--submit-hover);
+        transform: scale(1.05);
+      }
+
+      button:active {
+        transform: scale(1);
+      }
     </style>
   </head>
   <body>
@@ -92,13 +119,12 @@
     <textarea
       id="pasteContent"
       placeholder="Paste your text here..."
-      onclick="paste(this)"
     ></textarea>
     <br />
     <button onclick="submitText()">Submit</button>
     <div id="responseContainer"></div>
     <h2>latest pastes</h2>
     <div id="latestPasteUrls"></div>
-    <script src="script.js"></script>
+    <script src="pastebinscript.js"></script>
   </body>
 </html>

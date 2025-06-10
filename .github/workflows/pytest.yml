@@ -5,6 +5,7 @@ on:
     branches:
       - "*"
     paths-ignore:
+      - 'client/web/**'
       - "backend/**"
 jobs:
   test:
