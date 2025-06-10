@@ -5,6 +5,7 @@ on:
       - "*"
     paths-ignore:
       - 'client/web/**'
+      - "backend/**"
 jobs:
   build:
     runs-on: ubuntu-latest
