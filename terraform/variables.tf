@@ -50,7 +50,7 @@ variable "cors_allow_origins" {
 variable "notification_email" {
   type      = string
   sensitive = true
-  default   = ""
+  default   = "maximebonin@outlook.com"
 }
 
 variable "zipped_files" {
