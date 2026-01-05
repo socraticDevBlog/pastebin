@@ -1,0 +1,4 @@
+port: "3000"
+db_path: "./pastebin.db"
+max_paste_size: 2097152 # 2MB
+default_ttl: 604800 # 7 days
