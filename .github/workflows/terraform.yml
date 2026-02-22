@@ -1,5 +1,8 @@
 name: "Terraform plan on PR and apply on merge to main"
 on:
+  push:
+    branches:
+      - main
   pull_request:
     types:
       - opened
