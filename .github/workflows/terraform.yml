@@ -6,8 +6,9 @@ on:
       - synchronize
       - closed
     paths-ignore:
-      - 'client/web/**'
+      - "client/web/**"
       - "backend/**"
+      - "go-server/**"
 permissions:
   id-token: write # This is required for aws oidc connection
   contents: read # This is required for actions/checkout
@@ -36,7 +37,7 @@ jobs:
           pip install --user pipenv
           if [ ! -d .venv ]; then
             export PIPENV_VENV_IN_PROJECT=1
-            pipenv install --deploy
+            pipenv install
           else
             export PIPENV_VENV_IN_PROJECT=1
             pipenv sync
@@ -52,7 +53,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.14.1
+          terraform_version: 1.14.5
 
       - name: Terraform fmt
         id: fmt
