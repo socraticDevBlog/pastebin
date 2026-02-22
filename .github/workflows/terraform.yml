@@ -7,7 +7,6 @@ on:
     types:
       - opened
       - synchronize
-      - closed
     paths-ignore:
       - "client/web/**"
       - "backend/**"
